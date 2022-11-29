@@ -14,7 +14,7 @@ class Student{
        Student(int, string, string, string, string, string, char);
 };
 
-Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen = 'A'){
+Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen){
     ID = id;
     Name = name;
     DoB = dob;
@@ -120,7 +120,7 @@ void splitData(string &data, int &id, string &name, string &DoB, char &gender, s
                           }
                     }
     }
-
+    // cout << strOfId << '*';
     id = stoi(strOfId);
 }
 
@@ -128,7 +128,7 @@ void splitData(string &data, int &id, string &name, string &DoB, char &gender, s
 void readData(StudentList &list){
     fstream iFile;
       int fileNo = 1;
-        while(fileNo != 13){                      //until 13, but file no. 6 has some problem in format, throwing error
+        while(fileNo <= 12){                      //until 13, but file no. 6 has some problem in format, throwing error
       string fileName = "Fall2022DSDataFile00";
             if(fileNo > 9){ fileName = "Fall2022DSDataFile0";}
             fileName += to_string(fileNo);
