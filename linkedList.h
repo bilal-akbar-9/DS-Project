@@ -20,7 +20,7 @@ Student::Student(int id, string name, string dob, string reg, string add, string
     DoB = dob;
     regDate = reg;
     address = add;
-    qualification;
+    qualification = qual;
     Next = NULL;
 }
 
@@ -103,6 +103,7 @@ StudentList::~StudentList(){
 void splitData(string &data, int &id, string &name, string &DoB, char &gender, string &regDate, string &address, string &qualification){
         string strOfId;  // because we are reading string from file, later on it'll be store in id variable using stoi
           int entryNo =1;
+        //   for(int i =0; i< data.length(); i++){ if(data[i] == '\t'){cout <<  '*';}else{cout << data[i];}}cout << endl;
     for(int i=0; i< data.length(); i++){
                   if(data[i] == '\t'){ 
                            entryNo++;
@@ -119,6 +120,7 @@ void splitData(string &data, int &id, string &name, string &DoB, char &gender, s
                           }
                     }
     }
+
     id = stoi(strOfId);
 }
 
@@ -126,9 +128,10 @@ void splitData(string &data, int &id, string &name, string &DoB, char &gender, s
 void readData(StudentList &list){
     fstream iFile;
       int fileNo = 1;
-        while(fileNo != 6){                      //until 13, but file no. 6 has some problem in format, throwing error
+        while(fileNo != 13){                      //until 13, but file no. 6 has some problem in format, throwing error
       string fileName = "Fall2022DSDataFile00";
-            fileName += to_string(fileNo);cout << fileName << ' '<< fileNo << endl; 
+            if(fileNo > 9){ fileName = "Fall2022DSDataFile0";}
+            fileName += to_string(fileNo);
            iFile.open("./DatasetFall2022DSproject/" + fileName +".txt");
                   if(iFile.is_open()){
                        while(!(iFile.eof())){
