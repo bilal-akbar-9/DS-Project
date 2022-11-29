@@ -6,6 +6,8 @@ using namespace std;
 // BP node
 //this is the for b+ p
 int MAX_KEYS = 3;
+// Hello i am tauseef 
+// i am a student of bsse
 class Node {
     bool IS_LEAF; //indicating if it's a leaf 
     int* key, size;   //size is the number of keys in a node, it changes with the addition of more keys
