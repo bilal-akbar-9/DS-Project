@@ -120,7 +120,6 @@ void splitData(string &data, int &id, string &name, string &DoB, char &gender, s
                     }
     }
     id = stoi(strOfId);
-    
 }
 
 
