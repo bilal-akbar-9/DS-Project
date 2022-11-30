@@ -2,7 +2,8 @@
 #include <fstream>
 #include <string>
 using namespace std;
-
+class StudentList;
+void readData(StudentList&); //prototype of global function
 //student Node 
 class Student{
     private:
@@ -30,18 +31,21 @@ class StudentList{
     private:
        Student * Head;
     public:
-       StudentList();
-       void addStudent(int, string, string, string, string, string, char);
+        StudentList();
+        Student* getHead();
+        void addStudent(int, string, string, string, string, string, char);
        void displayList();
        void deleteStudent(int);
        ~StudentList();
 };
 
-StudentList::StudentList(){
+StudentList::StudentList() {
     Head = NULL;
     readData(*this);
 }
-
+Student* StudentList::getHead() {
+    return Head;
+}
 void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen){
     Student * newStudent = new Student(id, name, dob, reg, add, qual, gen);
     if(Head == NULL){

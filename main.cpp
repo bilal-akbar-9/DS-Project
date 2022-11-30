@@ -1,11 +1,17 @@
 #include "./linkedList.h"
-#include"./temp.cpp"
-
+#include"./BPlusTree.h"
+template <class T=int>
+void Insertion(BPLusTree<T>& tree, StudentList& list) {
+    Student* nodePtr = list.getHead();
+    while (nodePtr != NULL) {
+        tree.insert(nodePtr->ID);
+        nodePtr = nodePtr->Next;
+    }
+    tree.display(tree.getRoot());
+}
 int main(){
     StudentList l1;
-    // int choose = 0;
-    // cout << "Enter your choice\n1.Search by ID\n2.Search by Name\n3.Search by DoB\n4.Search by Gender\n5.Search by Registration Date\n6.Search by Qualification\n8.Exit\n";
-    // cin >> choose;
-    
+    BPLusTree<int> tree;
+    Insertion(tree, l1);
     return EXIT_SUCCESS;
 }

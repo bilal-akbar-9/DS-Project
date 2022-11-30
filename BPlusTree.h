@@ -1,24 +1,25 @@
 #pragma once
 #include <iostream>
 using namespace std;
-// BP node
+//forward declaration
+template <class T>
+class BPLusTree;
 int MAX_KEYS = 10;
 template <class T=int>
 class Node {
     bool IS_LEAF; //indicating if it's a leaf 
-    T* key,
-        int size;   //size is the number of keys in a node, it changes with the addition of more keys
+    T* key;
+    int size;   //size is the number of keys in a node, it changes with the addition of more keys
     Node** ptr; //double pointer to create 
-    friend class BPLusTree;
+    friend class BPLusTree<T>;
 public:
     Node();
 };
 template <class T>
 Node<T>::Node() {
-    key = new int[MAX_KEYS];
+    key = new T[MAX_KEYS];
     ptr = new Node * [MAX_KEYS + 1];
 }
-
 // BP tree
 template <class T=int>
 class BPLusTree {
@@ -76,9 +77,9 @@ void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
         cursor->ptr[i + 1] = child;
     }
     else {
-        Node* newInternal = new Node;
+        Node<T>* newInternal = new Node<T>;
         int virtualKey[MAX_KEYS + 1];
-        Node* virtualPtr[MAX_KEYS + 2];
+        Node<T>* virtualPtr[MAX_KEYS + 2];
         for (int i = 0; i < MAX_KEYS; i++) {
             virtualKey[i] = cursor->key[i];
         }
@@ -106,7 +107,7 @@ void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
             newInternal->ptr[i] = virtualPtr[j];
         }
         if (cursor == root) {
-            Node* newRoot = new Node;
+            Node<T>* newRoot = new Node<T>;
             newRoot->key[0] = cursor->key[cursor->size];
             newRoot->ptr[0] = cursor;
             newRoot->ptr[1] = newInternal;
@@ -128,7 +129,7 @@ void BPLusTree<T>::search(int x) {
         cout << "Tree is empty\n";
     }
     else {
-        Node* cursor = root;
+        Node<T>* cursor = root;
         while (cursor->IS_LEAF == false) {
             for (int i = 0; i < cursor->size; i++) {
                 if (x < cursor->key[i]) {
@@ -155,14 +156,14 @@ template <class T>
 // Insert Operation
 void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
     if (root == NULL) {
-        root = new Node; 
+        root = new Node<T>; 
         root->key[0] = x; //the first key of the root now has the value 'x'
         root->IS_LEAF = true; //initially the root is the leaf
         root->size = 1; //because only one key is added to the root
     }
     else {
-        Node* cursor = root;
-        Node* parent;
+        Node<T>* cursor = root;
+        Node<T>* parent;
         while (cursor->IS_LEAF == false) {
             parent = cursor;
             for (int i = 0; i < cursor->size; i++) {
@@ -189,7 +190,7 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
                 cursor->ptr[cursor->size - 1] = NULL;
         }
         else {
-            Node* newLeaf = new Node;
+            Node<T>* newLeaf = new Node<T>;
             int virtualNode[MAX_KEYS + 1];
             for (int i = 0; i < MAX_KEYS; i++) {
                 virtualNode[i] = cursor->key[i];
@@ -214,7 +215,7 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
                 newLeaf->key[i] = virtualNode[j];
             }
             if (cursor == root) {
-                Node* newRoot = new Node;
+                Node<T>* newRoot = new Node<T>;
                 newRoot->key[0] = newLeaf->key[0];
                 newRoot->ptr[0] = cursor;
                 newRoot->ptr[1] = newLeaf;
