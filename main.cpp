@@ -1,13 +1,14 @@
 #include "./linkedList.h"
 #include"./BPlusTree.h"
-template <class T=int>
+template <class T>
 void Insertion(BPLusTree<T>& tree, StudentList& list) {
     Student* nodePtr = list.getHead();
     while (nodePtr != NULL) {
         tree.insert(nodePtr->ID);
         nodePtr = nodePtr->Next;
     }
-    tree.display(tree.getRoot());
+    PointToLinkedList(tree, list);
+    tree.displayThroughLeaf(tree.getRoot(), 100, 200);
 }
 int main(){
     StudentList l1;

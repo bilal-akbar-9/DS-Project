@@ -12,10 +12,13 @@ class Student{
        string Name, DoB, regDate, address, qualification;
        char gender;
        Student * Next;
+       Student();
        Student(int, string, string, string, string, string, char);
 };
-
-Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen){
+Student::Student() {
+    
+}
+Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen) {
     ID = id;
     Name = name;
     DoB = dob;

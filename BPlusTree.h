@@ -11,7 +11,10 @@ class Node {
     T* key;
     int size;   //size is the number of keys in a node, it changes with the addition of more keys
     Node** ptr; //double pointer to create 
+    Student** studentPtr;
     friend class BPLusTree<T>;
+    template <class Y>
+    friend void PointToLinkedList(BPLusTree<Y>& , StudentList& );
 public:
     Node();
 };
@@ -30,8 +33,11 @@ public:
     BPLusTree();
     void search(int); //searching a key in the tree
     void insert(int); //inserting a key in the tree
-    void display(Node<T>*); //displaying the tree
     Node<T>* getRoot(); //returning the root of the tree
+    void addStudentPtrToleaf(Node<T>*&);
+    void deleteStudentPtrFromleaf(Node<T>*&);
+    void display(Node<T>*); //displaying the tree
+    void displayThroughLeaf(Node<T>*, int x, int y); //displaying the tree through the leaf nodes
     void deleteTree(Node<T>*); //deleting the tree
     ~BPLusTree();
 };
@@ -113,6 +119,7 @@ void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
         }
         virtualPtr[i + 1] = child;
         newInternal->IS_LEAF = false;
+        deleteStudentPtrFromleaf(newInternal);
         cursor->size = (MAX_KEYS + 1) / 2;
         newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
         // Copying the first half of the keys to the original node
@@ -130,6 +137,7 @@ void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
             newRoot->ptr[0] = cursor;
             newRoot->ptr[1] = newInternal;
             newRoot->IS_LEAF = false;
+            deleteStudentPtrFromleaf(newRoot);
             newRoot->size = 1;
             root = newRoot;
         }
@@ -182,6 +190,7 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
         root = new Node<T>; 
         root->key[0] = x; //the first key of the root now has the value 'x'
         root->IS_LEAF = true; //initially the root is the leaf
+        addStudentPtrToleaf(root);
         root->size = 1; //because only one key is added to the root
     }
     else {
@@ -236,7 +245,8 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
             }
             //insert the new key
             virtualNode[i] = x; //the new key is inserted at the position 'i'
-            newLeaf->IS_LEAF = true; 
+            newLeaf->IS_LEAF = true;
+            addStudentPtrToleaf(newLeaf);
             cursor->size = (MAX_KEYS + 1) / 2;
             newLeaf->size = MAX_KEYS + 1 - (MAX_KEYS + 1) / 2;
             cursor->ptr[cursor->size] = newLeaf;  //
@@ -257,6 +267,7 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
                 newRoot->ptr[0] = cursor;
                 newRoot->ptr[1] = newLeaf;
                 newRoot->IS_LEAF = false;
+                deleteStudentPtrFromleaf(cursor);
                 newRoot->size = 1;
                 root = newRoot;
             }
@@ -269,6 +280,19 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
 }
 
 
+
+template <class T>
+Node<T>* BPLusTree<T>::getRoot() {
+    return root;
+}
+template <class T>
+void BPLusTree<T>::addStudentPtrToleaf(Node<T>*& ptr) {
+    ptr->studentPtr = new Student * [MAX_KEYS];
+}
+template <class T>
+void BPLusTree<T>::deleteStudentPtrFromleaf(Node<T>*& ptr) {
+    delete[] ptr->studentPtr;
+}
 // Print the tree
 template <class T>
 void BPLusTree<T>::display(Node<T>* cursor) {
@@ -286,10 +310,51 @@ void BPLusTree<T>::display(Node<T>* cursor) {
     }
 }
 
-// Get the root
 template <class T>
-Node<T>* BPLusTree<T>::getRoot() {
-    return root;
+void BPLusTree<T>::displayThroughLeaf(Node<T>* cursor, int x, int y) {
+    while (cursor->IS_LEAF == false) {
+        for (int i = 0; i < cursor->size; i++) {
+            // If the key is less than the current key
+            if (x < cursor->key[i]) {
+                cursor = cursor->ptr[i];
+                break;
+            }
+            // If it's the last key of the node
+            if (i == cursor->size - 1) {
+                cursor = cursor->ptr[i + 1];
+                break;
+            }
+        }
+    }
+    int j = 0;
+    while (cursor->key[j] <= y)
+    {
+        if (cursor->key[j] >= x)
+            cout << cursor->studentPtr[j]->ID << " "<< cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << endl;
+        j++;
+        if (j == cursor->size){
+            cursor = cursor->ptr[cursor->size];
+            j = 0;
+        }
+    }
+}
+template <class T>
+void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
+    Node<T>* cursor = tree.getRoot();
+    while (cursor->IS_LEAF == false) {
+        cursor = cursor->ptr[0];
+    }
+    Student* nodePtr = list.getHead();
+    int i = 0;
+    while (nodePtr != NULL) {
+        cursor->studentPtr[i] = nodePtr;
+        nodePtr = nodePtr->Next;
+        i++;
+        if (i == cursor->size) {
+            cursor = cursor->ptr[cursor->size];
+            i = 0;
+        }
+    }
 }
 template <class T>
 void BPLusTree<T>::deleteTree(Node<T>* cursor) {
