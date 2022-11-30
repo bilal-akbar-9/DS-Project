@@ -39,6 +39,7 @@ class StudentList{
 
 StudentList::StudentList(){
     Head = NULL;
+    readData(*this);
 }
 
 void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen){
