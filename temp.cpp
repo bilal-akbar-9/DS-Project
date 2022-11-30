@@ -1,40 +1,129 @@
+#pragma once
 #include <iostream>
 using namespace std;
 // BP node
 int MAX_KEYS = 10;
+template <class T=int>
 class Node {
     bool IS_LEAF; //indicating if it's a leaf 
-    int* key, size;   //size is the number of keys in a node, it changes with the addition of more keys
+    T* key,
+        int size;   //size is the number of keys in a node, it changes with the addition of more keys
     Node** ptr; //double pointer to create 
-    friend class BPTree;
+    friend class BPLusTree;
 public:
     Node();
 };
-Node::Node() {
+template <class T>
+Node<T>::Node() {
     key = new int[MAX_KEYS];
     ptr = new Node * [MAX_KEYS + 1];
 }
 
 // BP tree
-class BPTree {
-    Node* root;
-    void insertInternal(int, Node*, Node*);
-    Node* findParent(Node*, Node*);
+template <class T=int>
+class BPLusTree {
+    Node<T>* root;
+    Node<T>* findParent(Node<T>*, Node<T>*); //this is used to find the parent of the node
+    void insertInternalNode(int, Node<T>*, Node<T>*); //this function is used to insert a key in the internal node
 public:
-    BPTree();
-    void search(int);
-    void insert(int);
-    void display(Node*);
-    Node* getRoot();
-    void readingFile();
+    BPLusTree();
+    void search(int); //searching a key in the tree
+    void insert(int); //inserting a key in the tree
+    void display(Node<T>*); //displaying the tree
+    Node<T>* getRoot(); //returning the root of the tree
+    void deleteTree(Node<T>*); //deleting the tree
+    ~BPLusTree();
 };
-
-BPTree::BPTree() {
+template <class T>
+BPLusTree<T>::BPLusTree() {
     root = NULL;
 }
+// Find the parent
+template <class T>
+Node<T>* BPLusTree<T>::findParent(Node<T>* cursor, Node<T>* child) {
+    Node<T>* parent;
+    if (cursor->IS_LEAF || (cursor->ptr[0])->IS_LEAF) {
+        return NULL;
+    }
+    for (int i = 0; i < cursor->size + 1; i++) {
+        if (cursor->ptr[i] == child) {
+            parent = cursor;
+            return parent;
+        }
+        else {
+            parent = findParent(cursor->ptr[i], child);
+            if (parent != NULL)
+                return parent;
+        }
+    }
+    return parent;
+}
+// Insert Operation
+template <class T>
+void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
+    if (cursor->size < MAX_KEYS) {
+        int i = 0;
+        while (x > cursor->key[i] && i < cursor->size)
+            i++;
+        for (int j = cursor->size; j > i; j--) {
+            cursor->key[j] = cursor->key[j - 1];
+        }
+        for (int j = cursor->size + 1; j > i + 1; j--) {
+            cursor->ptr[j] = cursor->ptr[j - 1];
+        }
+        cursor->key[i] = x;
+        cursor->size++;
+        cursor->ptr[i + 1] = child;
+    }
+    else {
+        Node* newInternal = new Node;
+        int virtualKey[MAX_KEYS + 1];
+        Node* virtualPtr[MAX_KEYS + 2];
+        for (int i = 0; i < MAX_KEYS; i++) {
+            virtualKey[i] = cursor->key[i];
+        }
+        for (int i = 0; i < MAX_KEYS + 1; i++) {
+            virtualPtr[i] = cursor->ptr[i];
+        }
+        int i = 0, j;
+        while (x > virtualKey[i] && i < MAX_KEYS)
+            i++;
+        for (int j = MAX_KEYS + 1; j > i; j--) {
+            virtualKey[j] = virtualKey[j - 1];
+        }
+        virtualKey[i] = x;
+        for (int j = MAX_KEYS + 2; j > i + 1; j--) {
+            virtualPtr[j] = virtualPtr[j - 1];
+        }
+        virtualPtr[i + 1] = child;
+        newInternal->IS_LEAF = false;
+        cursor->size = (MAX_KEYS + 1) / 2;
+        newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
+        for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++) {
+            newInternal->key[i] = virtualKey[j];
+        }
+        for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++) {
+            newInternal->ptr[i] = virtualPtr[j];
+        }
+        if (cursor == root) {
+            Node* newRoot = new Node;
+            newRoot->key[0] = cursor->key[cursor->size];
+            newRoot->ptr[0] = cursor;
+            newRoot->ptr[1] = newInternal;
+            newRoot->IS_LEAF = false;
+            newRoot->size = 1;
+            root = newRoot;
+        }
+        else {
+            insertInternalNode(cursor->key[cursor->size], findParent(root, cursor), newInternal);
+        }
+    }
+}
 
+
+template <class T>
 // Search operation
-void BPTree::search(int x) {
+void BPLusTree<T>::search(int x) {
     if (root == NULL) {
         cout << "Tree is empty\n";
     }
@@ -62,8 +151,9 @@ void BPTree::search(int x) {
     }
 }
 
+template <class T>
 // Insert Operation
-void BPTree::insert(int x /*it's the incoming value*/) {
+void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
     if (root == NULL) {
         root = new Node; 
         root->key[0] = x; //the first key of the root now has the value 'x'
@@ -133,95 +223,16 @@ void BPTree::insert(int x /*it's the incoming value*/) {
                 root = newRoot;
             }
             else {
-                insertInternal(newLeaf->key[0], parent, newLeaf);
+                insertInternalNode(newLeaf->key[0], parent, newLeaf);
             }
         }
     }
 }
 
-// Insert Operation
-void BPTree::insertInternal(int x, Node* cursor, Node* child) {
-    if (cursor->size < MAX_KEYS) {
-        int i = 0;
-        while (x > cursor->key[i] && i < cursor->size)
-            i++;
-        for (int j = cursor->size; j > i; j--) {
-            cursor->key[j] = cursor->key[j - 1];
-        }
-        for (int j = cursor->size + 1; j > i + 1; j--) {
-            cursor->ptr[j] = cursor->ptr[j - 1];
-        }
-        cursor->key[i] = x;
-        cursor->size++;
-        cursor->ptr[i + 1] = child;
-    }
-    else {
-        Node* newInternal = new Node;
-        int virtualKey[MAX_KEYS + 1];
-        Node* virtualPtr[MAX_KEYS + 2];
-        for (int i = 0; i < MAX_KEYS; i++) {
-            virtualKey[i] = cursor->key[i];
-        }
-        for (int i = 0; i < MAX_KEYS + 1; i++) {
-            virtualPtr[i] = cursor->ptr[i];
-        }
-        int i = 0, j;
-        while (x > virtualKey[i] && i < MAX_KEYS)
-            i++;
-        for (int j = MAX_KEYS + 1; j > i; j--) {
-            virtualKey[j] = virtualKey[j - 1];
-        }
-        virtualKey[i] = x;
-        for (int j = MAX_KEYS + 2; j > i + 1; j--) {
-            virtualPtr[j] = virtualPtr[j - 1];
-        }
-        virtualPtr[i + 1] = child;
-        newInternal->IS_LEAF = false;
-        cursor->size = (MAX_KEYS + 1) / 2;
-        newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
-        for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++) {
-            newInternal->key[i] = virtualKey[j];
-        }
-        for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++) {
-            newInternal->ptr[i] = virtualPtr[j];
-        }
-        if (cursor == root) {
-            Node* newRoot = new Node;
-            newRoot->key[0] = cursor->key[cursor->size];
-            newRoot->ptr[0] = cursor;
-            newRoot->ptr[1] = newInternal;
-            newRoot->IS_LEAF = false;
-            newRoot->size = 1;
-            root = newRoot;
-        }
-        else {
-            insertInternal(cursor->key[cursor->size], findParent(root, cursor), newInternal);
-        }
-    }
-}
-
-// Find the parent
-Node* BPTree::findParent(Node* cursor, Node* child) {
-    Node* parent;
-    if (cursor->IS_LEAF || (cursor->ptr[0])->IS_LEAF) {
-        return NULL;
-    }
-    for (int i = 0; i < cursor->size + 1; i++) {
-        if (cursor->ptr[i] == child) {
-            parent = cursor;
-            return parent;
-        }
-        else {
-            parent = findParent(cursor->ptr[i], child);
-            if (parent != NULL)
-                return parent;
-        }
-    }
-    return parent;
-}
 
 // Print the tree
-void BPTree::display(Node* cursor) {
+template <class T>
+void BPLusTree<T>::display(Node<T>* cursor) {
     if (cursor != NULL) {
         for (int i = 0; i < cursor->size; i++) {
             cout << cursor->key[i] << " ";
@@ -236,6 +247,24 @@ void BPTree::display(Node* cursor) {
 }
 
 // Get the root
-Node* BPTree::getRoot() {
+template <class T>
+Node<T>* BPLusTree<T>::getRoot() {
     return root;
+}
+template <class T>
+void BPLusTree<T>::deleteTree(Node<T>* cursor) {
+    if (cursor != NULL) {
+        if (cursor->IS_LEAF != true) {
+            for (int i = 0; i < cursor->size + 1; i++) {
+                deleteTree(cursor->ptr[i]);
+            }
+        }
+        delete cursor;
+    }
+}
+template<class T>
+BPLusTree<T>::~BPLusTree()
+{
+    //delete tree
+    deleteTree(root);
 }
