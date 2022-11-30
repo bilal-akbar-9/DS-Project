@@ -1,8 +1,5 @@
 .exe
 /DatasetFall2022DSproject
 .out
-.obj
-.exe
-.cc
-.txt
 .vscode
+/untracked
