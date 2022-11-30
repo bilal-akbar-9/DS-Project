@@ -1,11 +1,7 @@
-#include <bits/stdc++.h>
 #include <iostream>
-#include <sys/stat.h>
-#include <sys/types.h>
 using namespace std;
 // BP node
-//this is the for b+ p
-int MAX_KEYS = 3;
+int MAX_KEYS = 10;
 class Node {
     bool IS_LEAF; //indicating if it's a leaf 
     int* key, size;   //size is the number of keys in a node, it changes with the addition of more keys
@@ -14,6 +10,10 @@ class Node {
 public:
     Node();
 };
+Node::Node() {
+    key = new int[MAX_KEYS];
+    ptr = new Node * [MAX_KEYS + 1];
+}
 
 // BP tree
 class BPTree {
@@ -26,12 +26,8 @@ public:
     void insert(int);
     void display(Node*);
     Node* getRoot();
+    void readingFile();
 };
-
-Node::Node() {
-    key = new int[MAX_KEYS];
-    ptr = new Node * [MAX_KEYS + 1];
-}
 
 BPTree::BPTree() {
     root = NULL;
@@ -242,54 +238,4 @@ void BPTree::display(Node* cursor) {
 // Get the root
 Node* BPTree::getRoot() {
     return root;
-}
-
-int main() {
-    BPTree node;
-    node.insert(1);
-    node.insert(4);
-    node.insert(7);
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(10);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(17);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(21);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(31);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(25);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(19);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(20);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(28);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(42);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    node.insert(43);
-
-    node.display(node.getRoot());
-    cout << "***********************\n";
-    // node.search(15);
 }
