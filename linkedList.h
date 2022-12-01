@@ -1,7 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-using namespace std;
+#pragma once
+#include"include.h"
 class StudentList;
 void readData(StudentList&); //prototype of global function
 //student Node 

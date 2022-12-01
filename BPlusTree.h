@@ -1,6 +1,5 @@
 #pragma once
-#include <iostream>
-using namespace std;
+#include"include.h"
 //forward declaration
 template <class T>
 class BPLusTree;
