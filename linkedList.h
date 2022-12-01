@@ -1,7 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-using namespace std;
+#pragma once
+#include"include.h"
 class StudentList;
 void readData(StudentList&); //prototype of global function
 //student Node 
@@ -38,6 +36,9 @@ class StudentList{
         Student* getHead();
         void addStudent(int, string, string, string, string, string, char);
        void displayList();
+       void sortListByName(); //sort list with respect to their name
+       void sortListByID(); //sort list with respect to their ID
+       void copyList(StudentList&); //copy list to another list
        void deleteStudent(int);
        ~StudentList();
 };
@@ -70,8 +71,52 @@ void StudentList::displayList(){
         temp = temp->Next;
     }
 }
-
-void StudentList::deleteStudent(int id){
+void StudentList::sortListByName() {
+    // sortList on the basis of name
+    Student* temp = Head;
+    while (temp != NULL) {
+        Student* temp2 = temp->Next;
+        while (temp2 != NULL) {
+            if (temp->Name.compare(temp2->Name) > 0) {
+                swap(temp->ID, temp2->ID);
+                swap(temp->Name, temp2->Name);
+                swap(temp->DoB, temp2->DoB);
+                swap(temp->regDate, temp2->regDate);
+                swap(temp->address, temp2->address);
+                swap(temp->qualification, temp2->qualification);
+            }
+            temp2 = temp2->Next;
+        }
+        temp = temp->Next;
+    }
+}
+void StudentList::sortListByID() {
+    // sortList on the basis of name
+    Student* temp = Head;
+    while (temp != NULL) {
+        Student* temp2 = temp->Next;
+        while (temp2 != NULL) {
+            if (temp->ID > temp2->ID) {
+                swap(temp->ID, temp2->ID);
+                swap(temp->Name, temp2->Name);
+                swap(temp->DoB, temp2->DoB);
+                swap(temp->regDate, temp2->regDate);
+                swap(temp->address, temp2->address);
+                swap(temp->qualification, temp2->qualification);
+            }
+            temp2 = temp2->Next;
+        }
+        temp = temp->Next;
+    }
+}
+void StudentList::copyList(StudentList& list) {
+    Student* temp = Head;
+    while (temp != NULL) {
+        list.addStudent(temp->ID, temp->Name, temp->DoB, temp->regDate, temp->address, temp->qualification, temp->gender);
+        temp = temp->Next;
+    }
+}
+void StudentList::deleteStudent(int id) {
     Student * temp = Head;
     Student * prev = Head;
     while(temp != NULL){

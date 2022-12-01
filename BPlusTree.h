@@ -1,10 +1,9 @@
 #pragma once
-#include <iostream>
-using namespace std;
+#include"include.h"
 //forward declaration
 template <class T>
 class BPLusTree;
-int MAX_KEYS = 50;
+int MAX_KEYS = 5;
 template <class T=int>
 class Node {
     bool IS_LEAF; //indicating if it's a leaf 
@@ -14,7 +13,9 @@ class Node {
     Student** studentPtr;
     friend class BPLusTree<T>;
     template <class Y>
-    friend void PointToLinkedList(BPLusTree<Y>& , StudentList& );
+    friend void PointToLinkedList(BPLusTree<Y>&, StudentList&);
+    template <class Y>
+    friend void PointToLinkedListString(BPLusTree<Y>&, StudentList&);
 public:
     Node();
 };
@@ -22,6 +23,7 @@ template <class T>
 Node<T>::Node() {
     key = new T[MAX_KEYS];
     ptr = new Node * [MAX_KEYS + 1];
+    studentPtr = new Student * [MAX_KEYS];
 }
 // BP tree
 template <class T=int>
@@ -29,15 +31,17 @@ class BPLusTree {
     Node<T>* root;
     Node<T>* findParent(Node<T>*, Node<T>*); //this is used to find the parent of the node
     void insertInternalNode(int, Node<T>*, Node<T>*); //this function is used to insert a key in the internal node
+    void insertInternalNodeString(string, Node<T>*, Node<T>*); //this function is used to insert a key in the internal node
 public:
     BPLusTree();
-    void search(int); //searching a key in the tree
+    void displayParticular(T); //searching a key in the tree
+    void displayParticularString(string);
+    void displayThroughleafs(Node<T>*); //displaying the keys in the tree
     void insert(int); //inserting a key in the tree
+    void insertString(string); //inserting a key in the tree
     Node<T>* getRoot(); //returning the root of the tree
-    void addStudentPtrToleaf(Node<T>*&);
-    void deleteStudentPtrFromleaf(Node<T>*&);
     void display(Node<T>*); //displaying the tree
-    void displayThroughLeaf(Node<T>*, int x, int y); //displaying the tree through the leaf nodes
+    void displayBetweenRange(Node<T>*, int x, int y); //displaying the tree through the leaf nodes
     void deleteTree(Node<T>*); //deleting the tree
     ~BPLusTree();
 };
@@ -70,127 +74,14 @@ Node<T>* BPLusTree<T>::findParent(Node<T>* cursor, Node<T>* child) {
     }
     return parent;
 }
-// Insert Operation
-template <class T>
-void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
-    // If the node is not full
-    if (cursor->size < MAX_KEYS) {
-        int i = 0;
-        // Find the position of the new key
-        while (x > cursor->key[i] && i < cursor->size)
-            i++;
-        // Shifting the keys to the right
-        for (int j = cursor->size; j > i; j--) {
-            cursor->key[j] = cursor->key[j - 1];
-        }
-        // Inserting the new key
-        for (int j = cursor->size + 1; j > i + 1; j--) {
-            cursor->ptr[j] = cursor->ptr[j - 1];
-        }
-        cursor->key[i] = x;
-        cursor->size++;
-        cursor->ptr[i + 1] = child;
-    }
-    // If the node is full 
-    else {
-        Node<T>* newInternal = new Node<T>;
-        int virtualKey[MAX_KEYS + 1];
-        Node<T>* virtualPtr[MAX_KEYS + 2];
-        // Copying the keys  to the virtual arrays
-        for (int i = 0; i < MAX_KEYS; i++) {
-            virtualKey[i] = cursor->key[i];
-        }
-        // Copying the pointers to the virtual array
-        for (int i = 0; i < MAX_KEYS + 1; i++) {
-            virtualPtr[i] = cursor->ptr[i];
-        }
-        int i = 0, j;
-        // Find the position of the new key
-        while (x > virtualKey[i] && i < MAX_KEYS)
-            i++;
-        // Shifting the keys to the right
-        for (int j = MAX_KEYS + 1; j > i; j--) {
-            virtualKey[j] = virtualKey[j - 1];
-        }
-        virtualKey[i] = x;
-        // Shifting the pointers to the right
-        for (int j = MAX_KEYS + 2; j > i + 1; j--) {
-            virtualPtr[j] = virtualPtr[j - 1];
-        }
-        virtualPtr[i + 1] = child;
-        newInternal->IS_LEAF = false;
-        deleteStudentPtrFromleaf(newInternal);
-        cursor->size = (MAX_KEYS + 1) / 2;
-        newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
-        // Copying the first half of the keys to the original node
-        for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++) {
-            newInternal->key[i] = virtualKey[j];
-        }
-        // Copying the first half of the pointers to the original node
-        for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++) {
-            newInternal->ptr[i] = virtualPtr[j];
-        }
-        // If the node is the root
-        if (cursor == root) {
-            Node<T>* newRoot = new Node<T>;
-            newRoot->key[0] = cursor->key[cursor->size];
-            newRoot->ptr[0] = cursor;
-            newRoot->ptr[1] = newInternal;
-            newRoot->IS_LEAF = false;
-            deleteStudentPtrFromleaf(newRoot);
-            newRoot->size = 1;
-            root = newRoot;
-        }
-        else {
-            insertInternalNode(cursor->key[cursor->size], findParent(root, cursor), newInternal);
-        }
-    }
-}
 
-
-template <class T>
-// Search operation
-void BPLusTree<T>::search(int x) {
-    if (root == NULL) {
-        cout << "Tree is empty\n";
-    }
-    else {
-        Node<T>* cursor = root;
-     // If the node is not a leaf
-        while (cursor->IS_LEAF == false) {
-            
-            for (int i = 0; i < cursor->size; i++) {
-                // If the key is less than the current key
-                if (x < cursor->key[i]) {
-                    cursor = cursor->ptr[i];
-                    break;
-                }
-                // If it's the last key of the node
-                if (i == cursor->size - 1) {
-                    cursor = cursor->ptr[i + 1];
-                    break;
-                }
-            }
-        }
-        // If the node is a leaf 
-        for (int i = 0; i < cursor->size; i++) {
-            // If the key is found
-            if (cursor->key[i] == x) {
-                cout << "Found\n";
-                return;
-            }
-        }
-        cout << "Not found\n";
-    }
-}
 template <class T>
 // Insert Operation
 void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
     if (root == NULL) {
-        root = new Node<T>; 
+        root = new Node<T>;
         root->key[0] = x; //the first key of the root now has the value 'x'
         root->IS_LEAF = true; //initially the root is the leaf
-        addStudentPtrToleaf(root);
         root->size = 1; //because only one key is added to the root
     }
     else {
@@ -230,7 +121,7 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
         //if the leaf node is full
         else {
             Node<T>* newLeaf = new Node<T>; //create a new leaf node
-            T virtualNode[MAX_KEYS + 1];
+            T virtualNode[MAX_KEYS + 2];
             //copy the keys of the current leaf node to the virtual node
             for (int i = 0; i < MAX_KEYS; i++) {
                 virtualNode[i] = cursor->key[i];
@@ -246,7 +137,6 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
             //insert the new key
             virtualNode[i] = x; //the new key is inserted at the position 'i'
             newLeaf->IS_LEAF = true;
-            addStudentPtrToleaf(newLeaf);
             cursor->size = (MAX_KEYS + 1) / 2;
             newLeaf->size = MAX_KEYS + 1 - (MAX_KEYS + 1) / 2;
             cursor->ptr[cursor->size] = newLeaf;  //
@@ -267,7 +157,6 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
                 newRoot->ptr[0] = cursor;
                 newRoot->ptr[1] = newLeaf;
                 newRoot->IS_LEAF = false;
-                deleteStudentPtrFromleaf(cursor);
                 newRoot->size = 1;
                 root = newRoot;
             }
@@ -279,19 +168,248 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
     }
 }
 
+// Insert Operation
+template <class T>
+void BPLusTree<T>::insertInternalNode(int x, Node<T>* cursor, Node<T>* child) {
+    // If the node is not full
+    if (cursor->size < MAX_KEYS) {
+        int i = 0;
+        // Find the position of the new key
+        while (x > cursor->key[i] && i < cursor->size)
+            i++;
+        // Shifting the keys to the right
+        for (int j = cursor->size; j > i; j--) {
+            cursor->key[j] = cursor->key[j - 1];
+        }
+        // Inserting the new key
+        for (int j = cursor->size + 1; j > i + 1; j--) {
+            cursor->ptr[j] = cursor->ptr[j - 1];
+        }
+        cursor->key[i] = x;
+        cursor->size++;
+        cursor->ptr[i + 1] = child;
+    }
+    // If the node is full 
+    else {
+        Node<T>* newInternal = new Node<T>;
+        T virtualKey[MAX_KEYS + 2];
+        Node<T>* virtualPtr[MAX_KEYS + 3];
+        // Copying the keys  to the virtual arrays
+        for (int i = 0; i < MAX_KEYS; i++) {
+            virtualKey[i] = cursor->key[i];
+        }
+        // Copying the pointers to the virtual array
+        for (int i = 0; i < MAX_KEYS + 1; i++) {
+            virtualPtr[i] = cursor->ptr[i];
+        }
+        int i = 0, j;
+        // Find the position of the new key
+        while (x > virtualKey[i] && i < MAX_KEYS)
+            i++;
+        // Shifting the keys to the right
+        for (int j = MAX_KEYS + 1; j > i; j--) {
+            virtualKey[j] = virtualKey[j - 1];
+        }
+        virtualKey[i] = x;
+        // Shifting the pointers to the right
+        for (int j = MAX_KEYS + 2; j > i + 1; j--) {
+            virtualPtr[j] = virtualPtr[j - 1];
+        }
+        virtualPtr[i + 1] = child;
+        newInternal->IS_LEAF = false;
+        cursor->size = (MAX_KEYS + 1) / 2;
+        newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
+        // Copying the first half of the keys to the original node
+        for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++) {
+            newInternal->key[i] = virtualKey[j];
+        }
+        // Copying the first half of the pointers to the original node
+        for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++) {
+            newInternal->ptr[i] = virtualPtr[j];
+        }
+        // If the node is the root
+        if (cursor == root) {
+            Node<T>* newRoot = new Node<T>;
+            newRoot->key[0] = cursor->key[cursor->size];
+            newRoot->ptr[0] = cursor;
+            newRoot->ptr[1] = newInternal;
+            newRoot->IS_LEAF = false;
+            newRoot->size = 1;
+            root = newRoot;
+        }
+        else {
+            insertInternalNode(cursor->key[cursor->size], findParent(root, cursor), newInternal);
+        }
+    }
+}
+template <class T>
+void BPLusTree<T>::insertString(string x /*it's the incoming value*/) {
+    if (root == NULL) {
+        root = new Node<T>;
+        root->key[0] = x; //the first key of the root now has the value 'x'
+        root->IS_LEAF = true; //initially the root is the leaf
+        root->size = 1; //because only one key is added to the root
+    }
+    else {
+        Node<T>* cursor = root;
+        Node<T>* parent;
+        //insert the new key at the leaf node   
+        while (cursor->IS_LEAF == false) {
+            parent = cursor;
+            for (int i = 0; i < cursor->size; i++) {
+                // If the key is less than the current key
+                if (x.compare(cursor->key[i]) < 0) {
+                    cursor = cursor->ptr[i];
+                    break;
+                }
+                // If it's the last key of the node
+                if (i == cursor->size - 1) {
+                    cursor = cursor->ptr[i + 1];
+                    break;
+                }
+            }
+        }
+        //if the leaf node is not full
+        if (cursor->size < MAX_KEYS) {
+            int i = 0;
+            // Find the position of the new key
+            while (x.compare(cursor->key[i]) > 0 && i < cursor->size)
+                i++;
+            // Shifting the keys to the right
+            for (int j = cursor->size; j > i; j--) {
+                cursor->key[j] = cursor->key[j - 1];
+            }
+            cursor->key[i] = x;
+            cursor->size++;
+            cursor->ptr[cursor->size] = cursor->ptr[cursor->size - 1]; //the last pointer of the leaf node is the same as the second last pointer
+            cursor->ptr[cursor->size - 1] = NULL;
+        }
+        //if the leaf node is full
+        else {
+            Node<T>* newLeaf = new Node<T>; //create a new leaf node
+            T virtualNode[MAX_KEYS + 2];
+            //copy the keys of the current leaf node to the virtual node
+            for (int i = 0; i < MAX_KEYS; i++) {
+                virtualNode[i] = cursor->key[i];
+            }
+            int i = 0, j;
+            //find the position of the new key
+            while (x.compare(virtualNode[i]) > 0 && i < MAX_KEYS)
+                i++;
+            //shift the keys to the right
+            for (int j = MAX_KEYS + 1; j > i; j--) {
+                virtualNode[j] = virtualNode[j - 1];
+            }
+            //insert the new key
+            virtualNode[i] = x; //the new key is inserted at the position 'i'
+            newLeaf->IS_LEAF = true;
+            cursor->size = (MAX_KEYS + 1) / 2;
+            newLeaf->size = MAX_KEYS + 1 - (MAX_KEYS + 1) / 2;
+            cursor->ptr[cursor->size] = newLeaf;  //
+            newLeaf->ptr[newLeaf->size] = cursor->ptr[MAX_KEYS];
+            cursor->ptr[MAX_KEYS] = NULL;
+            //copy the keys to the new leaf node
+            for (i = 0; i < cursor->size; i++) {
+                cursor->key[i] = virtualNode[i];
+            }
+            //copy the keys to the current leaf node
+            for (i = 0, j = cursor->size; i < newLeaf->size; i++, j++) {
+                newLeaf->key[i] = virtualNode[j];
+            }
+            //if the current leaf node is the root
+            if (cursor == root) {
+                Node<T>* newRoot = new Node<T>;
+                newRoot->key[0] = newLeaf->key[0];
+                newRoot->ptr[0] = cursor;
+                newRoot->ptr[1] = newLeaf;
+                newRoot->IS_LEAF = false;
+                newRoot->size = 1;
+                root = newRoot;
+            }
+            //if the current leaf node is not the root
+            else {
+                insertInternalNodeString(newLeaf->key[0], parent, newLeaf);
+            }
+        }
+    }
+}
 
-
+template <class T>
+void BPLusTree<T>::insertInternalNodeString(string x, Node<T>* cursor, Node<T>* child) {
+    // If the node is not full
+    if (cursor->size < MAX_KEYS) {
+        int i = 0;
+        // Find the position of the new key
+        while (x.compare(cursor->key[i]) > 0 && i < cursor->size)
+            i++;
+        // Shifting the keys to the right
+        for (int j = cursor->size; j > i; j--) {
+            cursor->key[j] = cursor->key[j - 1];
+        }
+        // Inserting the new key
+        for (int j = cursor->size + 1; j > i + 1; j--) {
+            cursor->ptr[j] = cursor->ptr[j - 1];
+        }
+        cursor->key[i] = x;
+        cursor->size++;
+        cursor->ptr[i + 1] = child;
+    }
+    // If the node is full 
+    else {
+        Node<T>* newInternal = new Node<T>;
+        T virtualKey[MAX_KEYS + 2];
+        Node<T>* virtualPtr[MAX_KEYS + 3];
+        // Copying the keys  to the virtual arrays
+        for (int i = 0; i < MAX_KEYS; i++) {
+            virtualKey[i] = cursor->key[i];
+        }
+        // Copying the pointers to the virtual array
+        for (int i = 0; i < MAX_KEYS + 1; i++) {
+            virtualPtr[i] = cursor->ptr[i];
+        }
+        int i = 0, j;
+        // Find the position of the new key
+        while (x.compare(virtualKey[i]) > 0 && i < MAX_KEYS)
+            i++;
+        // Shifting the keys to the right
+        for (int j = MAX_KEYS + 1; j > i; j--) {
+            virtualKey[j] = virtualKey[j - 1];
+        }
+        virtualKey[i] = x;
+        // Shifting the pointers to the right
+        for (int j = MAX_KEYS + 2; j > i + 1; j--) {
+            virtualPtr[j] = virtualPtr[j - 1];
+        }
+        virtualPtr[i + 1] = child;
+        newInternal->IS_LEAF = false;
+        cursor->size = (MAX_KEYS + 1) / 2;
+        newInternal->size = MAX_KEYS - (MAX_KEYS + 1) / 2;
+        // Copying the first half of the keys to the original node
+        for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++) {
+            newInternal->key[i] = virtualKey[j];
+        }
+        // Copying the first half of the pointers to the original node
+        for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++) {
+            newInternal->ptr[i] = virtualPtr[j];
+        }
+        // If the node is the root
+        if (cursor == root) {
+            Node<T>* newRoot = new Node<T>;
+            newRoot->key[0] = cursor->key[cursor->size];
+            newRoot->ptr[0] = cursor;
+            newRoot->ptr[1] = newInternal;
+            newRoot->IS_LEAF = false;
+            newRoot->size = 1;
+            root = newRoot;
+        }
+        else {
+            insertInternalNodeString(cursor->key[cursor->size], findParent(root, cursor), newInternal);
+        }
+    }
+}
 template <class T>
 Node<T>* BPLusTree<T>::getRoot() {
     return root;
-}
-template <class T>
-void BPLusTree<T>::addStudentPtrToleaf(Node<T>*& ptr) {
-    ptr->studentPtr = new Student * [MAX_KEYS];
-}
-template <class T>
-void BPLusTree<T>::deleteStudentPtrFromleaf(Node<T>*& ptr) {
-    delete[] ptr->studentPtr;
 }
 // Print the tree
 template <class T>
@@ -311,7 +429,7 @@ void BPLusTree<T>::display(Node<T>* cursor) {
 }
 
 template <class T>
-void BPLusTree<T>::displayThroughLeaf(Node<T>* cursor, int x, int y) {
+void BPLusTree<T>::displayBetweenRange(Node<T>* cursor, int x, int y) {
     while (cursor->IS_LEAF == false) {
         for (int i = 0; i < cursor->size; i++) {
             // If the key is less than the current key
@@ -330,7 +448,7 @@ void BPLusTree<T>::displayThroughLeaf(Node<T>* cursor, int x, int y) {
     while (cursor->key[j] <= y)
     {
         if (cursor->key[j] >= x)
-            cout << cursor->studentPtr[j]->ID << " "<< cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << endl;
+            cout << cursor->studentPtr[j]->jD << " " << cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << " " << cursor->studentPtr[j]->gender << " " << cursor->studentPtr[j]->address << endl;
         j++;
         if (j == cursor->size){
             cursor = cursor->ptr[cursor->size];
@@ -338,8 +456,113 @@ void BPLusTree<T>::displayThroughLeaf(Node<T>* cursor, int x, int y) {
         }
     }
 }
+
+template <class T>
+// Search operation
+void BPLusTree<T>::displayParticular(T x) {
+    if (root == NULL) {
+        cout << "Tree is empty\n";
+    }
+    else {
+        Node<T>* cursor = root;
+     // If the node is not a leaf
+        while (cursor->IS_LEAF == false) {
+
+            for (int i = 0; i < cursor->size; i++) {
+                // If the key is less than the current key
+                if (x < cursor->key[i]) {
+                    cursor = cursor->ptr[i];
+                    break;
+                }
+                // If it's the last key of the node
+                if (i == cursor->size - 1) {
+                    cursor = cursor->ptr[i + 1];
+                    break;
+                }
+            }
+        }
+        // If the node is a leaf 
+        for (int i = 0; i < cursor->size; i++) {
+            // If the key is found
+            if (cursor->key[i] == x) {
+                cout << cursor->studentPtr[i]->ID << " " << cursor->studentPtr[i]->Name << " " << cursor->studentPtr[i]->DoB << " " << cursor->studentPtr[i]->gender << " " << cursor->studentPtr[i]->address << endl;
+                return;
+            }
+        }
+        cout << "Not found\n";
+    }
+}
+
+template <class T>
+// Search operation
+void BPLusTree<T>::displayParticularString(string x) {
+    if (root == NULL) {
+        cout << "Tree is empty\n";
+    }
+    else {
+        Node<T>* cursor = root;
+     // If the node is not a leaf
+        while (cursor->IS_LEAF == false) {
+
+            for (int i = 0; i < cursor->size; i++) {
+                // If the key is less than the current key
+                if (x.compare(cursor->key[i]) < 0) {
+                    cursor = cursor->ptr[i];
+                    break;
+                }
+                // If it's the last key of the node
+                if (i == cursor->size - 1) {
+                    cursor = cursor->ptr[i + 1];
+                    break;
+                }
+            }
+        }
+        // If the node is a leaf 
+        for (int i = 0; i < cursor->size; i++) {
+            // If the key is found
+            if (x.compare(cursor->key[i]) == 0) {
+                cout << cursor->studentPtr[i]->ID << " " << cursor->studentPtr[i]->Name << " " << cursor->studentPtr[i]->DoB << " " << cursor->studentPtr[i]->gender << " " << cursor->studentPtr[i]->address << endl;
+                return;
+            }
+        }
+        cout << "Not found\n";
+    }
+}
+template <class T>
+void BPLusTree<T>::displayThroughleafs(Node<T>* cursor) {
+    //display the leafs
+    while (cursor->IS_LEAF == false) {
+        cursor = cursor->ptr[0];
+    }
+    while (cursor != NULL) {
+        for (int i = 0; i < cursor->size; i++) {
+            cout << cursor->studentPtr[i]->Name << "\n";
+        }
+        cursor = cursor->ptr[cursor->size];
+    }
+}
 template <class T>
 void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
+    list.sortListByID();
+    Node<T>* cursor = tree.getRoot();
+    while (cursor->IS_LEAF == false) {
+        cursor = cursor->ptr[0];
+    }
+    Student* nodePtr = list.getHead();
+    int i = 0;
+    while (nodePtr != NULL) {
+        cursor->studentPtr[i] = nodePtr;
+        nodePtr = nodePtr->Next;
+        i++;
+        if (i == cursor->size) {
+            cursor = cursor->ptr[cursor->size];
+            i = 0;
+        }
+    }
+}
+template <class T>
+void PointToLinkedListString(BPLusTree<T>& tree, StudentList& list) {
+    list.sortListByName();
     Node<T>* cursor = tree.getRoot();
     while (cursor->IS_LEAF == false) {
         cursor = cursor->ptr[0];
@@ -359,6 +582,11 @@ void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
 template <class T>
 void BPLusTree<T>::deleteTree(Node<T>* cursor) {
     if (cursor != NULL) {
+        if (cursor->IS_LEAF == true) {
+            delete[] cursor->key;
+            delete[] cursor->ptr;
+            delete[] cursor->studentPtr;
+        }
         if (cursor->IS_LEAF != true) {
             for (int i = 0; i < cursor->size + 1; i++) {
                 deleteTree(cursor->ptr[i]);
