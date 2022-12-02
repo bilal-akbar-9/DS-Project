@@ -521,6 +521,16 @@ void BPLusTree<T>::displayParticularString(string x) {
             // If the key is found
             if (x.compare(cursor->key[i]) == 0) {
                 cout << cursor->studentPtr[i]->ID << " " << cursor->studentPtr[i]->Name << " " << cursor->studentPtr[i]->DoB << " " << cursor->studentPtr[i]->address << endl;
+                    int j=0;
+                while (x.compare(cursor->key[j]) == 0) {
+                    j++;
+                    if (x.compare(cursor->key[j]) == 0) 
+                    cout << cursor->studentPtr[j]->ID << " " << cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << " " << cursor->studentPtr[j]->address << endl;
+                    if (j == cursor->size) {
+                        cursor = cursor->ptr[cursor->size];
+                        j = 0;
+                    }
+                }
                 return;
             }
         }
@@ -561,7 +571,6 @@ void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
         i++;
         if (i == cursor->size) {
             cursor = cursor->ptr[cursor->size];
-            //why?
             i = 0;
         }
     }
@@ -578,6 +587,13 @@ void BPLusTree<T>::deleteTree(Node<T>* nodePtr) {
         delete[] nodePtr->studentPtr;
         delete nodePtr;
     }
+    else
+        if (nodePtr != NULL && nodePtr->isLeaf == true) {
+            delete[] nodePtr->key;
+            delete[] nodePtr->ptr;
+            delete[] nodePtr->studentPtr;
+            delete nodePtr;
+        }
 }
 template<class T>
 BPLusTree<T>::~BPLusTree()

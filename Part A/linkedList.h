@@ -36,7 +36,6 @@ class StudentList{
         Student* getHead();
         void addStudent(int, string, string, string, string, string, char);
        void displayList();
-       void modifySimilarStudentNames();
        void sortListByName(); //sort list with respect to their name
        void sortListByID(); //sort list with respect to their ID
        void copyList(StudentList&); //copy list to another list
@@ -47,28 +46,9 @@ class StudentList{
 StudentList::StudentList() {
     Head = NULL;
     readData(*this);
-    modifySimilarStudentNames();  
 }
 Student* StudentList::getHead() {
     return Head;
-}
-
-//all same named students will be modified by appending character 'a' to their name
-//hence all names will be unique
-//other way could be printing all same named students and then chaning files manually
-void StudentList::modifySimilarStudentNames(){
-    Student * temp = Head;
-    while (temp != NULL) {
-        Student * temp2 = temp->Next;
-        while (temp2 != NULL) {
-            if (temp->Name == temp2->Name) {
-                temp2->Name = temp2->Name + "a";
-                // cout << temp2->ID << ' ' << temp2->Name << endl;
-            }
-            temp2 = temp2->Next;
-        }
-        temp = temp->Next;
-    }
 }
 
 void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen){
