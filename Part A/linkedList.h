@@ -9,7 +9,8 @@ class Student{
        int ID;
        string Name, DoB, regDate, address, qualification;
        char gender;
-       Student * Next;
+       Student* Next;
+         Student* Prev;
        Student();
        Student(int, string, string, string, string, string, char);
 };
@@ -29,11 +30,14 @@ Student::Student(int id, string name, string dob, string reg, string add, string
 //linked list class
 
 class StudentList{
-    private:
-       Student * Head;
+private:
+    int maxID;
+    Student* Head;
     public:
         StudentList();
         Student* getHead();
+        void setHead(Student*);
+        int getMaxID();
         void addStudent(int, string, string, string, string, string, char);
        void displayList();
        void sortListByName(); //sort list with respect to their name
@@ -50,18 +54,28 @@ StudentList::StudentList() {
 Student* StudentList::getHead() {
     return Head;
 }
+void StudentList::setHead(Student* node) {
+    Head = node;
+}
+int StudentList::getMaxID() {
+    return maxID;
+}
 
 void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen){
-    Student * newStudent = new Student(id, name, dob, reg, add, qual, gen);
-    if(Head == NULL){
+    Student* newStudent = new Student(id, name, dob, reg, add, qual, gen);
+    if (Head == NULL) {
         Head = newStudent;
     }
-    else{
-        Student * temp = Head;
-        while(temp->Next != NULL){
-            temp = temp->Next;
+    else {
+        Student* nodePtr = Head;
+        while (nodePtr->Next != NULL) {
+            nodePtr = nodePtr->Next;
         }
-        temp->Next = newStudent;
+        nodePtr->Next = newStudent;
+        newStudent->Prev = nodePtr;
+    }
+    if (id > maxID) {
+        maxID = id;
     }
 }
 

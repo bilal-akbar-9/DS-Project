@@ -1,3 +1,4 @@
+#pragma once
 #include"include.h"
 #include"linkedList.h"
 #include"BPlusTree.h"
