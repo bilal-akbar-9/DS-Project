@@ -6,7 +6,7 @@ int main() {
     StudentList l1;
     int choose = 0;
     while (choose != 3) {
-        cout << "1.Search\n2.Delete\n3.Exit\n";
+        cout << "1.Search\n2.Insert or Delete\n3.Exit\n";
         cin >> choose;
         switch (choose)
         {
