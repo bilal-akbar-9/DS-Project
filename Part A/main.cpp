@@ -11,15 +11,16 @@ void Search(StudentList& list) {
         case 1: {
             string name;
             cout << "Enter name: ";
-            cin >> name;
+            cin.ignore();
+            getline(cin, name);
             BPLusTree<string> tree;
             Student* nodePtr = list.getHead();
+            list.sortListByName();
             while (nodePtr != nullptr) {
                 tree.insertString(nodePtr->Name);
                 nodePtr = nodePtr->Next;
             }
-            PointToLinkedListString(tree, list);
-            tree.displayThroughleafs(tree.getRoot());
+            PointToLinkedList(tree, list);
             tree.displayParticularString(name);
             break;
         }
@@ -29,6 +30,7 @@ void Search(StudentList& list) {
             cin >> Id;
             BPLusTree<int> tree;
             Student* nodePtr = list.getHead();
+            list.sortListByID();
             while (nodePtr != nullptr) {
                 tree.insert(nodePtr->ID);
                 nodePtr = nodePtr->Next;
@@ -56,27 +58,27 @@ void Search(StudentList& list) {
     }
 }
 
-void change(StudentList & list){
+void change(StudentList& list) {
     int flag = true;
-       while(flag){
-           int choice;
-             cout << "\n1. Change by ID\n2. Change by Name\n3. Exit\n";
-                cin >> choice;
-                switch (choice)
-                {
-                    case 1:{
-                        
-                    }break;
-                    case 2:{
-                    }break;
-                    case 3:{
-                        flag = false;}
-                    break;
-                    default:
-                        cout << "Invalid input\n";
-                        break;
-                }
-       }
+    while (flag) {
+        int choice;
+        cout << "\n1. Change by ID\n2. Change by Name\n3. Exit\n";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1: {
+
+        }break;
+        case 2: {
+        }break;
+        case 3: {
+            flag = false;}
+              break;
+        default:
+            cout << "Invalid input\n";
+            break;
+        }
+    }
 }
 int main() {
     StudentList l1;

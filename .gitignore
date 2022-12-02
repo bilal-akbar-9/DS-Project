@@ -1,7 +1,8 @@
 .exe
 /DatasetFall2022DSproject
-.out
+*.out
 .vscode
 /untracked
 temp
 test.cpp
+**DatasetFall2022DSproject
