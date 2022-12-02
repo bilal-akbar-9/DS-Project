@@ -10,14 +10,13 @@ void writingToFile(StudentList& list)
         {100,199,350,500,599,1000,2000,2500,4000,5000,6100,10000}
     };
     Student* nodePtr = list.getHead();
-    for (int j = 1, i = 0; i <= 12; i++,j++) {
+    for (int j = 1, i = 0; i <= 12; i++, j++) {
         fstream file;
         if (j < 9)
             file.open("Fall2022DSDataFile00" + to_string(j) + ".txt", ios::out);
-        else if (j > 9 && j<=12)
+        else if (j > 9 && j <= 12)
             file.open("Fall2022DSDataFile0" + to_string(j) + ".txt", ios::out);
         while (nodePtr != nullptr && (nodePtr->ID >= fileIdCoordinates[0][i] && nodePtr->ID <= fileIdCoordinates[1][i])) {
-            cout<<nodePtr->ID<<nodePtr->gender<<endl;
             file << nodePtr->ID << "\t" << nodePtr->Name << "\t" << nodePtr->DoB << "\t" << nodePtr->gender << "\t" << nodePtr->regDate << "\t" << nodePtr->address << "\t" << nodePtr->qualification << endl;
             nodePtr = nodePtr->Next;
         }
@@ -41,13 +40,15 @@ void insert(StudentList& list)
     getline(cin, add);
     cout << "Enter Qualification: ";
     getline(cin, qual);
-    //append to the list
+    cout << "Enter gender: ";
+    cin >> gen;
+     //append to the list
     list.addStudent(ID, name, dob, reg, add, qual, gen);
     fstream dataFile;
     //add data to the file
     dataFile.open("./DatasetFall2022DSproject/Fall2022DSDataFile012.txt", ios::app);
-    dataFile << ID << " " << name << " " << dob << " " << reg << " " << add << " " << qual << " " << gen << endl;
-    dataFile.close();
+    dataFile << endl << ID << "\t" << name << "\t" << dob << "\t" << gen << "\t" << reg << "\t" << add << "\t" << qual;
+        dataFile.close();
 }
 void Delete(StudentList& list) {
     cout << "Enter ID of the student you want to delete: ";
