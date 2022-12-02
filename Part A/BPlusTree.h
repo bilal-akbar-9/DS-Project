@@ -1,5 +1,5 @@
 #pragma once
-#include"include.h"
+#include"./include.h"
 //forward declaration
 template <class T>
 class BPLusTree;
@@ -32,6 +32,7 @@ class BPLusTree {
     Node<T>* findParent(Node<T>*, Node<T>*); //this is used to find the parent of the node
     void insertInternalNode(int, Node<T>*, Node<T>*); //this function is used to insert a key in the internal node
     void insertInternalNodeString(string, Node<T>*, Node<T>*); //this function is used to insert a key in the internal node
+    //why different functions for int and string? because we can't compare two strings with > or < operators
 public:
     BPLusTree();
     void displayParticular(T); //searching a key in the tree
@@ -556,6 +557,7 @@ void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
         i++;
         if (i == cursor->size) {
             cursor = cursor->ptr[cursor->size];
+            //why?
             i = 0;
         }
     }

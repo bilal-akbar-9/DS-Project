@@ -55,6 +55,29 @@ void Search(StudentList& list) {
         //     PointToLinkedList(tree, list);
     }
 }
+
+void change(StudentList & list){
+    int flag = true;
+       while(flag){
+           int choice;
+             cout << "\n1. Change by ID\n2. Change by Name\n3. Exit\n";
+                cin >> choice;
+                switch (choice)
+                {
+                    case 1:{
+                        
+                    }break;
+                    case 2:{
+                    }break;
+                    case 3:{
+                        flag = false;}
+                    break;
+                    default:
+                        cout << "Invalid input\n";
+                        break;
+                }
+       }
+}
 int main() {
     StudentList l1;
     int choose = 0;
@@ -66,6 +89,8 @@ int main() {
         case 1:
             Search(l1);
             break;
+        case 2:
+            change(l1);
         case 4:
             break;
         default:
