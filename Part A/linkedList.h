@@ -9,7 +9,8 @@ class Student{
        int ID;
        string Name, DoB, regDate, address, qualification;
        char gender;
-       Student * Next;
+       Student* Next;
+         Student* Prev;
        Student();
        Student(int, string, string, string, string, string, char);
 };
@@ -29,14 +30,16 @@ Student::Student(int id, string name, string dob, string reg, string add, string
 //linked list class
 
 class StudentList{
-    private:
-       Student * Head;
+private:
+    int maxID;
+    Student* Head;
     public:
         StudentList();
         Student* getHead();
+        void setHead(Student*);
+        int getMaxID();
         void addStudent(int, string, string, string, string, string, char);
        void displayList();
-       void modifySimilarStudentNames();
        void sortListByName(); //sort list with respect to their name
        void sortListByID(); //sort list with respect to their ID
        void copyList(StudentList&); //copy list to another list
@@ -45,43 +48,35 @@ class StudentList{
 };
 
 StudentList::StudentList() {
+    maxID = 0;
     Head = NULL;
     readData(*this);
-    modifySimilarStudentNames();  
 }
 Student* StudentList::getHead() {
     return Head;
 }
-
-//all same named students will be modified by appending character 'a' to their name
-//hence all names will be unique
-//other way could be printing all same named students and then chaning files manually
-void StudentList::modifySimilarStudentNames(){
-    Student * temp = Head;
-    while (temp != NULL) {
-        Student * temp2 = temp->Next;
-        while (temp2 != NULL) {
-            if (temp->Name == temp2->Name) {
-                temp2->Name = temp2->Name + "a";
-                // cout << temp2->ID << ' ' << temp2->Name << endl;
-            }
-            temp2 = temp2->Next;
-        }
-        temp = temp->Next;
-    }
+void StudentList::setHead(Student* node) {
+    Head = node;
+}
+int StudentList::getMaxID() {
+    return maxID;
 }
 
 void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen){
-    Student * newStudent = new Student(id, name, dob, reg, add, qual, gen);
-    if(Head == NULL){
+    Student* newStudent = new Student(id, name, dob, reg, add, qual, gen);
+    if (Head == NULL) {
         Head = newStudent;
     }
-    else{
-        Student * temp = Head;
-        while(temp->Next != NULL){
-            temp = temp->Next;
+    else {
+        Student* nodePtr = Head;
+        while (nodePtr->Next != NULL) {
+            nodePtr = nodePtr->Next;
         }
-        temp->Next = newStudent;
+        nodePtr->Next = newStudent;
+        newStudent->Prev = nodePtr;
+    }
+    if (id > maxID) {
+        maxID = id;
     }
 }
 

@@ -33,13 +33,14 @@ class BPLusTree {
     //why different functions for int and string? because we can't compare two strings with > or < operators
 public:
     BPLusTree();
-    void displayParticular(T); //searching a key in the tree
+    Student* displayParticular(T); //searching a key in the tree
     void displayParticularString(string);
     void displayThroughleafs(Node<T>*); //displaying the keys in the tree
     void insert(int); //inserting a key in the tree
     void insertString(string); //inserting a key in the tree
     Node<T>* getRoot(); //returning the root of the tree
     void display(Node<T>*); //displaying the tree
+    void deleteThisX(T); //deleting a key from the tree
     void displayBetweenRange(Node<T>*, int x, int y); //displaying the tree through the leaf nodes
     void deleteTree(Node<T>*); //deleting the tree
     ~BPLusTree();
@@ -458,7 +459,7 @@ void BPLusTree<T>::displayBetweenRange(Node<T>* cursor, int x, int y) {
 
 template <class T>
 // Search operation
-void BPLusTree<T>::displayParticular(T x) {
+Student* BPLusTree<T>::displayParticular(T x) {
     if (root == NULL) {
         cout << "Tree is empty\n";
     }
@@ -485,11 +486,13 @@ void BPLusTree<T>::displayParticular(T x) {
             // If the key is found
             if (cursor->key[i] == x) {
                 cout << cursor->studentPtr[i]->ID << " " << cursor->studentPtr[i]->Name << " " << cursor->studentPtr[i]->DoB << " " << cursor->studentPtr[i]->gender << " " << cursor->studentPtr[i]->address << endl;
-                return;
+                return cursor->studentPtr[i];
             }
         }
         cout << "Not found\n";
+        return nullptr;
     }
+    return nullptr;
 }
 
 template <class T>
@@ -521,13 +524,24 @@ void BPLusTree<T>::displayParticularString(string x) {
             // If the key is found
             if (x.compare(cursor->key[i]) == 0) {
                 cout << cursor->studentPtr[i]->ID << " " << cursor->studentPtr[i]->Name << " " << cursor->studentPtr[i]->DoB << " " << cursor->studentPtr[i]->address << endl;
+                int j = 0;
+                while (x.compare(cursor->key[j]) == 0) {
+                    j++;
+                    if (x.compare(cursor->key[j]) == 0)
+                        cout << cursor->studentPtr[j]->ID << " " << cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << " " << cursor->studentPtr[j]->address << endl;
+                    if (j == cursor->size) {
+                        cursor = cursor->ptr[cursor->size];
+                        j = 0;
+                        cout << cursor->studentPtr[j]->ID << " " << cursor->studentPtr[j]->Name << " " << cursor->studentPtr[j]->DoB << " " << cursor->studentPtr[j]->address << endl;
+                    }
+                }
                 return;
             }
         }
         cout << "Not found\n";
     }
 }
-    template <class T>
+template <class T>
 void BPLusTree<T>::displayThroughleafs(Node<T>* cursor) {
     //display the leafs
     while (cursor->isLeaf == false) {
@@ -561,7 +575,6 @@ void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
         i++;
         if (i == cursor->size) {
             cursor = cursor->ptr[cursor->size];
-            //why?
             i = 0;
         }
     }
@@ -578,6 +591,13 @@ void BPLusTree<T>::deleteTree(Node<T>* nodePtr) {
         delete[] nodePtr->studentPtr;
         delete nodePtr;
     }
+    else
+        if (nodePtr != NULL && nodePtr->isLeaf == true) {
+            delete[] nodePtr->key;
+            delete[] nodePtr->ptr;
+            delete[] nodePtr->studentPtr;
+            delete nodePtr;
+        }
 }
 template<class T>
 BPLusTree<T>::~BPLusTree()
