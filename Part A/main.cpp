@@ -22,6 +22,5 @@ int main() {
             break;
         }
     }
-    BPLusTree<int> tree;
     return EXIT_SUCCESS;
 }

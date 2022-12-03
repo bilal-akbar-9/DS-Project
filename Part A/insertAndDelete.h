@@ -2,7 +2,7 @@
 #include"include.h"
 #include"linkedList.h"
 #include"BPlusTree.h"
-void writingToFile(StudentList& list)
+void writeToStudentFiles(StudentList& list)
 {
     int fileIdCoordinates[2][13] =
     {
@@ -13,9 +13,9 @@ void writingToFile(StudentList& list)
     for (int j = 1, i = 0; i <= 12; i++, j++) {
         fstream file;
         if (j < 9)
-            file.open("Fall2022DSDataFile00" + to_string(j) + ".txt", ios::out);
+            file.open("./DatasetFall2022DSproject/Fall2022DSDataFile00" + to_string(j) + ".txt", ios::out);
         else if (j > 9 && j <= 12)
-            file.open("Fall2022DSDataFile0" + to_string(j) + ".txt", ios::out);
+            file.open("./DatasetFall2022DSproject/Fall2022DSDataFile0" + to_string(j) + ".txt", ios::out);
         while (nodePtr != nullptr && (nodePtr->ID >= fileIdCoordinates[0][i] && nodePtr->ID <= fileIdCoordinates[1][i])) {
             file << nodePtr->ID << "\t" << nodePtr->Name << "\t" << nodePtr->DoB << "\t" << nodePtr->gender << "\t" << nodePtr->regDate << "\t" << nodePtr->address << "\t" << nodePtr->qualification << endl;
             nodePtr = nodePtr->Next;
@@ -54,7 +54,7 @@ void Delete(StudentList& list) {
     cout << "Enter ID of the student you want to delete: ";
     int id;
     cin >> id;
-    BPLusTree<int> tree;
+    BPLusTree<int> tree("ID.txt");
     Student* nodePtr = list.getHead();
     list.sortListByID(); // sort the list with respect to their ID
     while (nodePtr != NULL) {
@@ -68,12 +68,19 @@ void Delete(StudentList& list) {
     }
     else {
         if (nodePtr != list.getHead()) {
-            nodePtr->Prev->Next = nodePtr->Next;
+            if (nodePtr->Next != NULL) {
+                nodePtr->Prev->Next = nodePtr->Next;
+                nodePtr->Next->Prev = nodePtr->Prev;
+            }
+            else {
+                nodePtr->Prev->Next = NULL;
+            }
         }
         else {
             list.setHead(nodePtr->Next);
+            nodePtr->Next->Prev = NULL;
         }
-        writingToFile(list);
+        writeToStudentFiles(list);
         cout << "Student deleted" << endl;
     }
 }
