@@ -2,6 +2,7 @@
 #include"include.h"
 #include"linkedList.h"
 #include"BPlusTree.h"
+
 void Search(StudentList& list) {
     int choose = 0;
     while (choose != 4) {
@@ -12,7 +13,7 @@ void Search(StudentList& list) {
             cout << "Enter name: ";
             cin.ignore();
             getline(cin, name);
-            BPLusTree<string> tree;
+            BPLusTree<string> tree("name.txt");
             Student* nodePtr = list.getHead();
             list.sortListByName();
             while (nodePtr != nullptr) {
@@ -21,12 +22,13 @@ void Search(StudentList& list) {
             }
             PointToLinkedList(tree, list);
             tree.displayParticularString(name);
+            tree.writeToIndexesFile();
         }
         else if (choose == 2) {
             int Id;
             cout << "Enter Id: ";
             cin >> Id;
-            BPLusTree<int> tree;
+            BPLusTree<int> tree("ID.txt");
             Student* nodePtr = list.getHead();
             list.sortListByID();
             while (nodePtr != nullptr) {
@@ -35,12 +37,11 @@ void Search(StudentList& list) {
             }
             PointToLinkedList(tree, list);
             tree.displayParticular(Id);
+            tree.writeToIndexesFile();
         }
         else if (choose == 3) {
             string query;
             cout << "Choose a query: \n1.ID\n2.First name\n3.Number of Females\n4.Number of Males\n";
-            
-
         }
         else if (choose == 4) {
             break;

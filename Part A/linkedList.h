@@ -25,6 +25,7 @@ Student::Student(int id, string name, string dob, string reg, string add, string
     address = add;
     qualification = qual;
     Next = NULL;
+    gender = gen;
 }
 
 //linked list class
