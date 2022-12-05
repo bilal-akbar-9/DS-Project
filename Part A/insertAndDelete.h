@@ -68,10 +68,17 @@ void Delete(StudentList& list) {
     }
     else {
         if (nodePtr != list.getHead()) {
-            nodePtr->Prev->Next = nodePtr->Next;
+            if (nodePtr->Next != NULL) {
+                nodePtr->Prev->Next = nodePtr->Next;
+                nodePtr->Next->Prev = nodePtr->Prev;
+            }
+            else {
+                nodePtr->Prev->Next = NULL;
+            }
         }
         else {
             list.setHead(nodePtr->Next);
+            nodePtr->Next->Prev = NULL;
         }
         writeToStudentFiles(list);
         cout << "Student deleted" << endl;
