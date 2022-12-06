@@ -38,10 +38,10 @@ void Graph::printStudentsNotInSocialCircle() {
       for(int i=0; i < MAXVEX; i++) {
         
            Node * temp = adjList[i]->next;
-                       bool visited[MAXVEX];
-                              for(int k=0; k< MAXVEX; k++) {
-                                visited[k] = false;
-                              }
+           bool visited[MAXVEX];
+               for(int k=0; k< MAXVEX; k++) {
+                 visited[k] = false;
+               }
                while(temp != NULL) {
                     Node * personsFriend = adjList[temp->index];
                        while (personsFriend != NULL) {
@@ -52,7 +52,7 @@ void Graph::printStudentsNotInSocialCircle() {
                        }
                     temp = temp->next;
                }
-               cout << endl  << "People not in social circle of " << adjList[i]->data << " are :\n";
+           cout << endl  << "People not in social circle of " << adjList[i]->data << " are :\n";
                for(int j=0; j< MAXVEX; j++) {
                             if(visited[j] == false) {
                                 cout << adjList[j]->data << ", " ;
