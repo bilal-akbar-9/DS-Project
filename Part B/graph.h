@@ -26,10 +26,37 @@ class Graph{
     int biggestSocialCircle();
     void socialDistancebtw(int, int);
     void displayCommonProfiles(int, int);
+    void printStudentsNotInSocialCircle();
+    // void ;
     // void pr
     ~Graph();
 };
 
+void Graph::printStudentsNotInSocialCircle() {
+    
+
+      for(int i=0; i < MAXVEX; i++) {
+           Node * temp = adjList[i]->next;
+                       bool visited[MAXVEX];
+                              for(int k=0; k< MAXVEX; k++) {
+                                visited[k] = false;
+                              }
+               while(temp != NULL) {
+                    Node * personsFriend = adjList[temp->index];
+                       while (personsFriend != NULL) {
+                                visited[personsFriend->index] = true;
+                        personsFriend = personsFriend->next;
+                       }
+                    temp = temp->next;
+               }
+               cout << endl << adjList[i]->data << " :\n";
+               for(int j=0; j< MAXVEX; j++) {
+                            if(visited[j] == false) {
+                                cout << adjList[j]->data << ", " ;
+                            }
+                }
+      }
+}
 
 void Graph::setIndex() {
     for(int i=0; i < MAXVEX; i++){
@@ -47,27 +74,35 @@ void Graph::setIndex() {
 }
 
 
+
 //below function is used to display the common profiles of two users
 void Graph::displayCommonProfiles(int a, int b) {
   bool visited[MAXVEX] ;
-     for(int i=0; i< MAXVEX;i++){ visited[i] = false;}
-   if(a < 0 || b < 0 || a > MAXVEX || b > MAXVEX){
+  int count = 0;
+     for(int i=0; i< MAXVEX;i++){ visited[i] = false; }
+   if(a < 0 || b < 0 || a > MAXVEX || b > MAXVEX) {
        cout << "Invalid input" << endl;
        return;
     }
     Node * temp1 = adjList[a]->next;
-    Node * temp2 = adjList[b]->next;
+    
     cout << "Common profiles between " << adjList[a]->data << " and " << adjList[b]->data << " are: " << endl;
     while(temp1 != NULL) {
         Node * person1Friends = adjList[temp1->index];
-            while( person1Friends != NULL){
-                   while(temp2 != NULL){
+        
+            while( person1Friends != NULL) {
+              Node * temp2 = adjList[b]->next;
+                   while(temp2 != NULL) {
                           Node * person2Friends = adjList[temp2->index];
-                          while(person2Friends != NULL){
+                          // cout << person2Friends->index << "*";
+                          // cout << temp2->index << " ";
+                          while(person2Friends != NULL) {
                                 if(person1Friends->index == person2Friends->index){
+                              // cout << person1Friends->index << "*" << person2Friends->index << " ";
                                    if(!visited[person1Friends->index]){
-                                       cout << person1Friends->data << endl;
-                                       visited[person1Friends->index] = true;
+                                        cout << count << ") "  << person1Friends->data << endl;
+                                       visited[person1Friends->index] = true; 
+                                       count++;
                                    }
                                 }
                                 person2Friends = person2Friends->next;
@@ -88,7 +123,7 @@ void Graph::socialDistancebtw(int src, int des){
     }
 
     int visited[MAXVEX];
-    for(int i=0; i< MAXVEX;i++){ visited[i] = 0;}
+    for(int i=0; i< MAXVEX;i++){ visited[i] = 0; }
     queue<int> q;
     q.push(src);
     visited[src] = 1;
@@ -96,15 +131,16 @@ void Graph::socialDistancebtw(int src, int des){
         int temp = q.front();
         q.pop();
         Node * tempNode = adjList[temp];
-        while(tempNode != NULL){
-            if(visited[tempNode->index] == 0){
+        while(tempNode != NULL) {
+            if( visited[tempNode->index] == 0 ) {
                 visited[tempNode->index] = visited[temp] + 1;
                 q.push(tempNode->index);
             }
+
             tempNode = tempNode->next;
         }
     }
-    cout << "Social distance between " << adjList[src]->data << " and " << adjList[des]->data << " is " << visited[des] - 1 << endl;
+    cout << "\nSocial distance between " << adjList[src]->data << " and " << adjList[des]->data << " is " << visited[des] - 1 << endl;
 }
 
 
@@ -134,8 +170,6 @@ void Graph::printGraph(){
 
 void Graph::addVertexAtRowHead(int v, int data) {
     adjList[v] = new Node(data, v);
-    // adjList[v]->index = 
-    // cout << adjList[v]->data << endl;
 }
 
 void Graph::addFriend(int v, int data) {
@@ -157,13 +191,11 @@ void splitString(string s, Graph &g) {
          if(s[i] == ':'){
             //  g.adjList[i]->index = i;
              g.addVertexAtRowHead(graphIndex, stoi(source));  //all member are added to the graph
-             graphIndex++;
+             graphIndex++;  //indices of the students
              valueNo++; 
              i++;   //because there is a space in file after ":"
          }
           else if(s[i] == ' '){
-                // cout << source << " " << destination << endl;
-                // cout << destination << "*";
                 g.addFriend(graphIndex-1, stoi(destination));
                 destination = "";
          }else{
@@ -198,42 +230,34 @@ void readData(Graph &g){
      g.setIndex();
 }
 
-bool isInPersonsFriendList(Node * t, int data){
-     while(t != NULL){
-          if(t->data == data){return true;}
-          t = t->next;
-     }
- return false;
-}
 
-//needs improvement
-int Graph::biggestSocialCircle(){
-    int max = 0, personIdWithBiggestSocialCircle = 0;
-      for(int i=0; i<MAXVEX; i++){
-           int count = 0;
-           Node * temp  = adjList[i]->next;
-              while(temp->next != NULL){
-                               Node * personsFriend = temp;
-                                 for(int j =0 ; j < MAXVEX; j++){
-                                       if(adjList[j]->data == personsFriend->data){
-                                            personsFriend = adjList[j]->next; break;
-                                       }
+int Graph::biggestSocialCircle() {
+    int personIdWithBiggestSocialCircle;
+    int maxCount =0;
+        for(int i=0; i< MAXVEX; i++) {
+        bool visited[MAXVEX];
+           for(int j=0; j< MAXVEX;j++){ visited[j] = false; }
+            int count = 0;
+            Node * temp = adjList[i]->next;
+               while(temp != NULL) {
+                    Node * personsFriend = adjList[temp->index];
+                        while(personsFriend != NULL) {
+                                 if(!visited[personsFriend->index]) {
+                                        count++;
+                                        // cout << count << ") " << personsFriend->data << endl;
+                                        visited[personsFriend->index] = true;
                                  }
-                                 while(personsFriend->next != NULL){
-                                       if(!(isInPersonsFriendList(adjList[i], personsFriend->data)))
-                                                                             {count++;}  //not counting the person itself
-                                    personsFriend = personsFriend->next;
-                                 }
-                  count++;
-                  temp = temp->next;
-              }
-              
-              if(count > max) { 
-                                  max = count; 
-                                  personIdWithBiggestSocialCircle = adjList[i]->data; 
-                          }
-      }
-  return personIdWithBiggestSocialCircle;
+                            personsFriend = personsFriend->next;
+                        }
+                    temp = temp->next;
+               }
+               if(count > maxCount) {
+                   maxCount = count;
+                   personIdWithBiggestSocialCircle = adjList[i]->data;
+   
+               }
+        }
+ return personIdWithBiggestSocialCircle;
 }
 
 
