@@ -36,6 +36,7 @@ void Graph::printStudentsNotInSocialCircle() {
     
 
       for(int i=0; i < MAXVEX; i++) {
+        
            Node * temp = adjList[i]->next;
                        bool visited[MAXVEX];
                               for(int k=0; k< MAXVEX; k++) {
@@ -44,12 +45,14 @@ void Graph::printStudentsNotInSocialCircle() {
                while(temp != NULL) {
                     Node * personsFriend = adjList[temp->index];
                        while (personsFriend != NULL) {
+                              
                                 visited[personsFriend->index] = true;
+
                         personsFriend = personsFriend->next;
                        }
                     temp = temp->next;
                }
-               cout << endl << adjList[i]->data << " :\n";
+               cout << endl  << "People not in social circle of " << adjList[i]->data << " are :\n";
                for(int j=0; j< MAXVEX; j++) {
                             if(visited[j] == false) {
                                 cout << adjList[j]->data << ", " ;
@@ -79,14 +82,16 @@ void Graph::setIndex() {
 void Graph::displayCommonProfiles(int a, int b) {
   bool visited[MAXVEX] ;
   int count = 0;
+   a = a - 2001;
+   b = b - 2001;
      for(int i=0; i< MAXVEX;i++){ visited[i] = false; }
-   if(a < 0 || b < 0 || a > MAXVEX || b > MAXVEX) {
+   if(a < 0 || b < 0 || a >= MAXVEX || b >= MAXVEX) {
        cout << "Invalid input" << endl;
        return;
     }
     Node * temp1 = adjList[a]->next;
     
-    cout << "Common profiles between " << adjList[a]->data << " and " << adjList[b]->data << " are: " << endl;
+    cout << "\nCommon profiles between " << adjList[a]->data << " and " << adjList[b]->data << " are: " << endl;
     while(temp1 != NULL) {
         Node * person1Friends = adjList[temp1->index];
         
@@ -117,7 +122,9 @@ void Graph::displayCommonProfiles(int a, int b) {
 
 
 void Graph::socialDistancebtw(int src, int des){
-    if(src < 0 || des < 0 || src > MAXVEX || des > MAXVEX){
+    src -= 2001;
+    des -= 2001;
+    if(src < 0 || des < 0 || src >= MAXVEX || des >= MAXVEX){
        cout << "Invalid input" << endl;
        return;
     }
