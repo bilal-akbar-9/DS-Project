@@ -2,8 +2,7 @@
 #include"include.h"
 #include"linkedList.h"
 #include"BPlusTree.h"
-void writeToStudentFiles(StudentList& list)
-{
+void writeToStudentFiles(StudentList& list) {
     
     int fileIdCoordinates[2][13] =
     {
@@ -24,8 +23,7 @@ void writeToStudentFiles(StudentList& list)
         file.close();
     }
 }
-void insert(StudentList& list)
-{
+void insert(StudentList& list) {
     int ID = list.getMaxID() + 1;
     string name, dob, reg, add, qual, reference;
     char gen;

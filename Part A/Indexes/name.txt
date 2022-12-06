@@ -611,7 +611,7 @@ Kaleem Laghari Kaleem Noor Chatta Kaleem Rehan Kalim Abdus Sammi Kalim Affan Min
 Kalim Awan Kalim Awan Kalim Chohan Kalim Ejaz Kalim Haqq 
 Kalim Hussaini Kalim Kazmi Kalim Khurram Minhas Kalim Laghari Kalim Niazi 
 Kalim Rabbi Kalim Shaukat Namani Kalsoom Bulbul Khattak Kalsoom Firdous Taimor Kiyyani Kalsoom Ghani 
-Kalsoom Kazmi Kalsoom Laghari Kalsoom Murtaza Kalsoom Pasha Kalsoom Sarwar 
+Kalsoom Kazmi Kalsoom Laghari Kalsoom Murtaza Kalsoom Pasha   3-Mar-76 Kalsoom Sarwar 
 Kamal Faizan Kamal Saeed Hussaini Kamran Chohan Kamran Khan Kamran Suleman 
 Kalsoom Sultan Kamal AAmer Hussaini Kamal Abbasi Kamal Arsalan Kamal Bhatti 
 Kamal Faizan Kamal Haqq Kamal Ismaili Kamal Khan Kamal Nabeel Khanzada 
@@ -1255,7 +1255,7 @@ Shahid Qureshi Shahroze Sonil Ansary Shakir Niazi Shammaa Adnan Shams-ul-Islam U
 Shaheen Anjum Shaheen Hussaini Shaheen Mehmood Hussaini Shaheen Satti Shaheen Yawar 
 Shafaq Kabir Haseeb Sehti Shafaq M. Mustansar Sherazi Shafaq Niazi Shafaq Rahmat Shafaq Raja Kashif Haq 
 Shaheen Anjum Shaheen Anwer Haq Shaheen Bhatti Shaheen Chatta Shaheen Hussaini 
-Shaheen Hussaini Shaheen Hussaini Shaheen Hussainil Shaheen Ismaili Shaheen Ismaili 
+Shaheen Hussaini Shaheen Hussaini Shaheen Hussaini Shaheen Ismaili Shaheen Ismaili 
 Shaheen Mehmood Hussaini Shaheen Minhas Shaheen Raza Abdul Mujeeb Haqqie Shaheen Sahir Abdus Sattar Qureshi Shaheen Saleem 
 Shaheen Satti Shaheen Sehti Shaheen Shakir Laghari Shaheen Sheharyar Shaheen Tipu Usmani 
 Shaheen Yawar Shaheen Zaran Shahid Haq Shahid Mujahid Haqqie Shahid Pasha 
@@ -1273,11 +1273,11 @@ Shahzor Kharasani Shahzor Muneer Shahzor Nazeer Shahzor Ramzan Shahzor Zahid Kha
 Shakeel Abdur Raziq Shakeel Abuzar Baig Shakeel Faisal Shakeel Kamran Shakeel Khanzada 
 Shakeel Paracha Shakeel Qutab-ud-Din Shakeel Soneel Chohan Shakeel Zaidi Shakir Arsalan 
 Shakir Haqqie Shakir Imran Butt Shakir Kabir Awan Shakir Kharasani Shakir Khurshid 
-Shakir Shah Shamim Ch. Kalim Kazmi Shamim Javed Kazmi  18-May-75 Shamima Ansari Shamima Mustamsir Mujahid Chatta 
+Shakir Shah Shamim Ch. Kalim Kazmi Shamim Javed Kazmi Shamima Ansari Shamima Mustamsir Mujahid Chatta 
 Shakir Niazi Shakir Osman Shakir Pasha Shakir Sahir Ansari Shakir Shah 
 Shakir Shah Shakir Shakeel Awan Shakir Zafar Shamim Abdur Rahman Shamim Bakht 
 Shamim Ch. Kalim Kazmi Shamim Chatta Shamim Haqqie Shamim Ismaili Shamim Jan 
-Shamim Javed Kazmi  18-May-75 Shamim Kashif Shamim Kharasani Shamim Satti Shamim Usmani 
+Shamim Javed Kazmi Shamim Kashif Shamim Kharasani Shamim Satti Shamim Usmani 
 Shamima Ansari Shamima Ansary Shamima Haq Shamima Khattak Shamima Minhas 
 Shamima Mustamsir Mujahid Chatta Shamima Satti Shamima Shah Shamima Sherazi Shamima Viqar-ul-Islam 
 Shammaa Kishwar Ismaili Shams Baig Shams Haq Shams-ul-Islam Abdullah Shams-ul-Islam Masroor 
@@ -1337,7 +1337,7 @@ Shk. Abdul Jabbar Butt Shk. Abdus Sattar Laghari Shk. Amer Khattak Shk. Arshad A
 Shk. Ghulam Yasin Chatta Shk. Ibrahim Bhatti Shk. Ibrahim Khan Shk. Ibrahim Laghari Shk. Ismail Haqqie 
 Shk. Jabir Niazi Shk. Jan Bhatti Shk. Kamran Jaffery Shk. Kamran Paracha Shk. Masroor Abbasi 
 Shk. Mehmood Kazmi Shk. Momin Khanzada Shk. Muamar Gondal Shk. Muazzum Zaidi Shk. Mujtaba Jaffery 
-Shk. Mukhtar Shah Shk. Muneer Butt Shk. Munir Hussaini Shk. Munnawar Awan Shk. Munnawar Gondal 
+Shk. Mukhtar Shah Shk. Muneer Butt Shk. Munir Hussaini 13-Dec-74 Shk. Munnawar Awan Shk. Munnawar Gondal 
 Shujaat Amjad Sidra Sherazi Sitara Khanzada Soneel Shazil Jaffery Suleman Aftab Khanzada 
 Shk. Qutab Minhas Shk. Shahid Niazi Shk. Uhad Kharasani Shk. Zil-e-Ali Sherazi Shuja Kazmi 
 Shk. Mustafa Khan Shk. Mustafa Paracha Shk. Niaz Haque Shk. Osman Butt Shk. Qasim Shah 

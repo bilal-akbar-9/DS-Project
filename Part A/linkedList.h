@@ -69,8 +69,7 @@ int StudentList::getMaxID() {
     return maxID;
 }
 string StudentList::getLastReference() {
-    for (int i = 0;i < tail->reference.length();i++)
-    {
+    for (int i = 0;i < tail->reference.length();i++) {
         if (tail->reference[i] == 'R')
         {
             string temp = tail->reference.substr(i + 1, tail->reference.length());

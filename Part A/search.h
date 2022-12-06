@@ -127,13 +127,13 @@ void range_Search(StudentList& list) {
         cout << "Invalid input\n";
     }
 }
+
 void query_combination_search(StudentList& list) {
     int choose = 0;
     while (choose != 4) {
         cout << "1.And\n2.Or\n3.Not\n4. Exit\n";
         cin >> choose;
-        if (choose == 1)
-        {
+        if (choose == 1) {
             int pick = 0;
             cout << "Choose from the given options\n1.ID and gender\n2.DOB and ID\n3.DoB and qualification\n";
             cin >> pick;
@@ -170,6 +170,9 @@ void query_combination_search(StudentList& list) {
                 cin >> start;
                 cout << "Enter the ending ID: ";
                 cin >> end;
+                cout << "Enter the DoB:";
+                cin.ignore();
+                getline(cin, DoB);
                 BPLusTree<int> tree("ID.txt");
                 Student* nodePtr = list.getHead();
                 list.sortListByID();
@@ -180,7 +183,7 @@ void query_combination_search(StudentList& list) {
                 PointToLinkedList(tree, list);
                 tree.displayBetweenRange(start, end, DoB);
             }
-            else if (pick == 3) {
+            else if (pick == 3) {  //not working fine
                 string DoB,qual;
                 cout << "Enter the DoB: ";
                 cin.ignore();
@@ -192,15 +195,132 @@ void query_combination_search(StudentList& list) {
                 Student* nodePtr = list.getHead();
                 list.sortListByDoB();
                 while (nodePtr != nullptr) {
-                    tree.insert(nodePtr->ID);
+                    tree.insertString(nodePtr->DoB);
                     nodePtr = nodePtr->Next;
                 }
                 PointToLinkedList(tree, list);
                 tree.displayQuery(DoB,qual);
             }
+        }else if(choose == 2) {
+            int pick = 0;
+            cout << "Choose from the given options\n1.ID or gender\n2.DOB or ID\n3.DoB or qualification\n";
+            cin >> pick;
+               if(pick == 1) {
+                  cout << "Enter the starting ID: ";
+                int start, end;
+                char gen;
+                cin >> start;
+                cout << "Enter the ending ID: ";
+                cin >> end;
+                int pick1 = 0;
+                while (pick1 != 1 && pick1 != 2) {
+                    cout << "Pick a gender\n1.Male\n2.Female\n";
+                    cin >> pick1;
+                }
+                if (pick1 == 1)
+                    gen = 'M';
+                else
+                    gen = 'F';
+                BPLusTree<int> tree("ID.txt");
+                Student* nodePtr = list.getHead();
+                list.sortListByID();
+                while (nodePtr != nullptr) {
+                    tree.insert(nodePtr->ID);
+                    nodePtr = nodePtr->Next;
+                }
+                PointToLinkedList(tree, list);
+                tree.displayBetweenRangeForOr(start, end, gen);
+               }else if(pick == 2) {
+                cout << "Enter the starting ID: ";
+                int start, end;
+                string DoB;
+                cin >> start;
+                cout << "Enter the ending ID: ";
+                cin >> end;
+                cin.ignore();
+                getline(cin, DoB);
+                BPLusTree<int> tree("ID.txt");
+                Student* nodePtr = list.getHead();
+                list.sortListByID();
+                while (nodePtr != nullptr) {
+                    tree.insert(nodePtr->ID);
+                    nodePtr = nodePtr->Next;
+                }
+                PointToLinkedList(tree, list);
+                tree.displayBetweenRangeForOr(start, end, DoB);
+               } else if(pick == 3) {
+                  string DoB,qual;
+                cout << "Enter the DoB: ";
+                cin.ignore();
+                getline(cin, DoB);
+                cout << "Enter the qualification: ";
+                cin.ignore();
+                getline(cin, qual);
+                BPLusTree<string> tree("DOB.txt");
+                Student* nodePtr = list.getHead();
+                list.sortListByDoB();
+                while (nodePtr != nullptr) {
+                    tree.insertString(nodePtr->DoB);
+                    nodePtr = nodePtr->Next;
+                }
+                PointToLinkedList(tree, list);
+                tree.displayQueryForOr(DoB,qual);
+               }
+        }else if(choose == 3) {
+            int pick = 0;
+            cout << "\nChoose option from following\n1.DOB\n2.ID\n3.Gender\n";
+            cin >> pick;
+               if(pick ==1) {
+                  cout << "Enter the starting ID: ";
+                int start, end;
+                string DoB;
+                cin >> start;
+                cout << "Enter the ending ID: ";
+                cin >> end;
+                cout << "Enter DoB:";
+                cin.ignore();
+                getline(cin, DoB);
+                BPLusTree<int> tree("ID.txt");
+                Student* nodePtr = list.getHead();
+                list.sortListByID();
+                while (nodePtr != nullptr) {
+                    tree.insert(nodePtr->ID);
+                    nodePtr = nodePtr->Next;
+                }
+                PointToLinkedList(tree, list);
+                tree.displayBetweenRangeForNot(start, end, DoB);
+               }else if(pick == 2) {
+
+               }else if(pick == 3) {
+                cout << "Enter the starting ID: ";
+                int start, end;
+                char gen;
+                cin >> start;
+                cout << "Enter the ending ID: ";
+                cin >> end;
+                int pick1 = 0;
+                while (pick1 != 1 && pick1 != 2) {
+                    cout << "Pick a gender\n1.Male\n2.Female\n";
+                    cin >> pick1;
+                }
+                if (pick1 == 1)
+                    gen = 'M';
+                else
+                    gen = 'F';
+                BPLusTree<int> tree("ID.txt");
+                Student* nodePtr = list.getHead();
+                list.sortListByID();
+                while (nodePtr != nullptr) {
+                    tree.insert(nodePtr->ID);
+                    nodePtr = nodePtr->Next;
+                }
+                PointToLinkedList(tree, list);
+                tree.displayBetweenRangeForNot(start, end, gen);
+               }
         }
     }
 }
+
 void Search(StudentList& list) {
     int choose = 0;
     while (choose != 4) {
