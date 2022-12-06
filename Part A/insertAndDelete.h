@@ -4,6 +4,7 @@
 #include"BPlusTree.h"
 void writeToStudentFiles(StudentList& list)
 {
+    
     int fileIdCoordinates[2][13] =
     {
         {0,101,200,351,501,600,1001,2001,2501,4001,5001,6101},
@@ -26,7 +27,7 @@ void writeToStudentFiles(StudentList& list)
 void insert(StudentList& list)
 {
     int ID = list.getMaxID() + 1;
-    string name, dob, reg, add, qual;
+    string name, dob, reg, add, qual, reference;
     char gen;
     cout << "The ID is :" << ID << endl;
     cout << "Enter Name: ";
@@ -40,15 +41,28 @@ void insert(StudentList& list)
     getline(cin, add);
     cout << "Enter Qualification: ";
     getline(cin, qual);
-    cout << "Enter gender: ";
-    cin >> gen;
-     //append to the list
-    list.addStudent(ID, name, dob, reg, add, qual, gen);
+    int choose = 0;
+    while (choose != 1 && choose != 2) {
+        cout << "Choose gender: \n1. Male\n2. Female\n";
+        cin >> choose;
+        if (choose == 1) {
+            gen = 'M';
+        }
+        else if (choose == 2) {
+            gen = 'F';
+        }
+        else {
+            cout << "Invalid input\n";
+        }
+    }
+    reference = list.getLastReference();
+    //append to the list
+    list.addStudent(ID, name, dob, reg, add, qual, gen, reference);
     fstream dataFile;
     //add data to the file
     dataFile.open("./DatasetFall2022DSproject/Fall2022DSDataFile012.txt", ios::app);
     dataFile << endl << ID << "\t" << name << "\t" << dob << "\t" << gen << "\t" << reg << "\t" << add << "\t" << qual;
-        dataFile.close();
+    dataFile.close();
 }
 void Delete(StudentList& list) {
     cout << "Enter ID of the student you want to delete: ";
@@ -67,12 +81,16 @@ void Delete(StudentList& list) {
         cout << "Student not found" << endl;
     }
     else {
+        Student* temp = nodePtr;
+        string tempReference = nodePtr->reference;
         if (nodePtr != list.getHead()) {
             if (nodePtr->Next != NULL) {
                 nodePtr->Prev->Next = nodePtr->Next;
                 nodePtr->Next->Prev = nodePtr->Prev;
             }
-            else {
+            else //if the node is the last node
+            {
+                list.tail = nodePtr->Prev;
                 nodePtr->Prev->Next = NULL;
             }
         }
@@ -80,6 +98,8 @@ void Delete(StudentList& list) {
             list.setHead(nodePtr->Next);
             nodePtr->Next->Prev = NULL;
         }
+        if (temp != NULL)
+            delete temp;
         writeToStudentFiles(list);
         cout << "Student deleted" << endl;
     }

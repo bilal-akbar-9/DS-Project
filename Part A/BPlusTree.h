@@ -44,7 +44,12 @@ public:
     Node<T>* getRoot(); //returning the root of the tree
     void display(Node<T>*); //displaying the tree
     void writeToIndexesFile();
+    void countTheNumberOfkeysinLeaves();
+    void displayQuery(string, string);
+    void displayBetweenRange(int x1, int x2, char gen);
+    void displayBetweenRange(int x1, int x2, string gen);
     void displayBetweenRange(Node<T>*, int x, int y); //displaying the tree through the leaf nodes
+    void stringBasedRangeSearch(string x, string y); //displaying the tree through the leaf nodes
     void deleteTree(Node<T>*); //deleting the tree
     ~BPLusTree();
 };
@@ -162,7 +167,22 @@ void BPLusTree<T>::insert(int x /*it's the incoming value*/) {
         }
     }
 }
-
+template <class T>
+void BPLusTree<T>::countTheNumberOfkeysinLeaves() {
+    Node<T>* nodePtr = root;
+    while (nodePtr->isLeaf == false) {
+        nodePtr = nodePtr->ptr[0];
+    }
+    int count = 0;
+    while (nodePtr != NULL) {
+        for (int i = 0; i < nodePtr->size; i++) {
+            cout << nodePtr->key[i] << " ";
+            count++;
+        }
+        nodePtr = nodePtr->ptr[nodePtr->size];
+    }
+    cout << "The count is " << count << endl;
+}
 // Insert Operation
 template <class T>
 void BPLusTree<T>::insertInInternalNode(int x, Node<T>* nodePtr, Node<T>* children) {
@@ -455,6 +475,64 @@ void BPLusTree<T>::writeToIndexesFile() {
     file.close();
 }
 template <class T>
+void BPLusTree<T>::displayBetweenRange(int x, int y, char gen) {
+    Node<T>* nodePtr = root;
+    while (nodePtr->isLeaf == false) {
+        for (int i = 0; i < nodePtr->size; i++) {
+            // If the key is less than the current key
+            if (x < nodePtr->key[i]) {
+                nodePtr = nodePtr->ptr[i];
+                break;
+            }
+            // If it's the last key of the node
+            if (i == nodePtr->size - 1) {
+                nodePtr = nodePtr->ptr[i + 1];
+                break;
+            }
+        }
+    }
+    int j = 0;
+    while (nodePtr->key[j] <= y)
+    {
+        if (nodePtr->key[j] >= x && nodePtr->studentPtr[j]->gender == gen)
+            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->gender << " " << nodePtr->studentPtr[j]->address << endl;
+        j++;
+        if (j == nodePtr->size) {
+            nodePtr = nodePtr->ptr[nodePtr->size];
+            j = 0;
+        }
+    }
+}
+template <class T>
+void BPLusTree<T>::displayBetweenRange(int x, int y, string DoB) {
+    Node<T>* nodePtr = root;
+    while (nodePtr->isLeaf == false) {
+        for (int i = 0; i < nodePtr->size; i++) {
+            // If the key is less than the current key
+            if (x < nodePtr->key[i]) {
+                nodePtr = nodePtr->ptr[i];
+                break;
+            }
+            // If it's the last key of the node
+            if (i == nodePtr->size - 1) {
+                nodePtr = nodePtr->ptr[i + 1];
+                break;
+            }
+        }
+    }
+    int j = 0;
+    while (nodePtr->key[j] <= y)
+    {
+        if (nodePtr->key[j] >= x && nodePtr->studentPtr[j]->DoB == DoB)
+            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->gender << " " << nodePtr->studentPtr[j]->address << endl;
+        j++;
+        if (j == nodePtr->size) {
+            nodePtr = nodePtr->ptr[nodePtr->size];
+            j = 0;
+        }
+    }
+}
+template <class T>
 void BPLusTree<T>::displayBetweenRange(Node<T>* nodePtr, int x, int y) {
     while (nodePtr->isLeaf == false) {
         for (int i = 0; i < nodePtr->size; i++) {
@@ -474,7 +552,86 @@ void BPLusTree<T>::displayBetweenRange(Node<T>* nodePtr, int x, int y) {
     while (nodePtr->key[j] <= y)
     {
         if (nodePtr->key[j] >= x)
-            cout << nodePtr->studentPtr[j]->jD << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->gender << " " << nodePtr->studentPtr[j]->address << endl;
+            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->gender << " " << nodePtr->studentPtr[j]->address << endl;
+        j++;
+        if (j == nodePtr->size) {
+            nodePtr = nodePtr->ptr[nodePtr->size];
+            j = 0;
+        }
+    }
+}
+template <class T>
+void BPLusTree<T>::displayQuery(string DoB, string qual) {
+    if (root == NULL) {
+        cout << "Tree is empty\n";
+    }
+    else {
+        Node<T>* nodePtr = root;
+        // If the node is not a leaf
+        while (nodePtr->isLeaf == false) {
+
+            for (int i = 0; i < nodePtr->size; i++) {
+                // If the key is less than the current key
+                if (DoB.compare(nodePtr->key[i]) < 0) {
+                    nodePtr = nodePtr->ptr[i];
+                    break;
+                }
+                // If it's the last key of the node
+                if (i == nodePtr->size - 1) {
+                    nodePtr = nodePtr->ptr[i + 1];
+                    break;
+                }
+            }
+        }
+        // If the node is a leaf 
+        for (int i = 0; i < nodePtr->size; i++) {
+            // If the key is found
+            if (DoB.compare(nodePtr->key[i]) == 0) {
+                if (qual.compare(nodePtr->studentPtr[i]->qualification) == 0)
+                    cout << nodePtr->studentPtr[i]->ID << " " << nodePtr->studentPtr[i]->Name << " " << nodePtr->studentPtr[i]->DoB << " " << nodePtr->studentPtr[i]->address << " " << nodePtr->studentPtr[i]->reference << endl;
+                int j = i;
+                while (DoB.compare(nodePtr->key[j]) == 0) {
+                    j++;
+                    if (DoB.compare(nodePtr->key[j]) == 0) {
+                        if (qual.compare(nodePtr->studentPtr[j]->qualification) == 0)
+                            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << " " << nodePtr->studentPtr[j]->reference << endl;
+                    }
+                    if (j == nodePtr->size) {
+                        nodePtr = nodePtr->ptr[nodePtr->size];
+                        j = 0;
+                        if (qual.compare(nodePtr->studentPtr[j]->qualification) == 0)
+                            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << " " << nodePtr->studentPtr[j]->reference << endl;
+                    }
+                }
+                return;
+            }
+        }
+        cout << "Not found\n";
+    }
+
+}
+template <class T>
+void BPLusTree<T>::stringBasedRangeSearch(string x, string y) {
+    Node<T>* nodePtr = root;
+    while (nodePtr->isLeaf == false) {
+        for (int i = 0; i < nodePtr->size; i++) {
+            // If the key is less than the current key
+            if (x.compare(nodePtr->key[i]) < 0) {
+                nodePtr = nodePtr->ptr[i];
+                break;
+            }
+            // If it's the last key of the node
+            if (i == nodePtr->size - 1) {
+                nodePtr = nodePtr->ptr[i + 1];
+                break;
+            }
+        }
+    }
+    int j = 0;
+    while (nodePtr->key[j].compare(y) <= 0)
+    {
+        if (nodePtr->key[j].compare(x) >= 0)
+            cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->gender << " " << nodePtr->studentPtr[j]->address << endl;
         j++;
         if (j == nodePtr->size) {
             nodePtr = nodePtr->ptr[nodePtr->size];
@@ -524,6 +681,7 @@ Student* BPLusTree<T>::displayParticular(T x) {
 template <class T>
 // Search operation
 void BPLusTree<T>::displayParticularString(string x) {
+
     if (root == NULL) {
         cout << "Tree is empty\n";
     }
@@ -549,16 +707,16 @@ void BPLusTree<T>::displayParticularString(string x) {
         for (int i = 0; i < nodePtr->size; i++) {
             // If the key is found
             if (x.compare(nodePtr->key[i]) == 0) {
-                cout << nodePtr->studentPtr[i]->ID << " " << nodePtr->studentPtr[i]->Name << " " << nodePtr->studentPtr[i]->DoB << " " << nodePtr->studentPtr[i]->address << endl;
-                int j = 0;
+                cout << nodePtr->studentPtr[i]->ID << " " << nodePtr->studentPtr[i]->Name << " " << nodePtr->studentPtr[i]->DoB << " " << nodePtr->studentPtr[i]->address << " " << nodePtr->studentPtr[i]->reference << endl;
+                int j = i;
                 while (x.compare(nodePtr->key[j]) == 0) {
                     j++;
                     if (x.compare(nodePtr->key[j]) == 0)
-                        cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << endl;
+                        cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << ' ' << nodePtr->studentPtr[j]->reference << endl;
                     if (j == nodePtr->size) {
                         nodePtr = nodePtr->ptr[nodePtr->size];
                         j = 0;
-                        cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << endl;
+                        cout << nodePtr->studentPtr[j]->ID << " " << nodePtr->studentPtr[j]->Name << " " << nodePtr->studentPtr[j]->DoB << " " << nodePtr->studentPtr[j]->address << ' ' << nodePtr->studentPtr[j]->reference << endl;
                     }
                 }
                 return;
@@ -567,28 +725,8 @@ void BPLusTree<T>::displayParticularString(string x) {
         cout << "Not found\n";
     }
 }
-// template <class T>
-// void BPLusTree<T>::displayThroughleafs(Node<T>* cursor) {
-//     //display the leafs
-//     while (cursor->isLeaf == false) {
-//         cursor = cursor->ptr[0];
-//     }
-//     while (cursor != NULL) {
-//         for (int i = 0; i < cursor->size; i++) {
-//             if (cursor->key[i].compare(cursor->studentPtr[i]->Name) == 0) {
-//                 cout << cursor->studentPtr[i]->Name << "\n";
-//             }
-//         }
-//         cursor = cursor->ptr[cursor->size];
-//     }
-// }
 template <class T>
 void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
-    if (typeid(tree.getRoot()->key) == typeid(string*)) {
-        list.sortListByName();
-    }
-    else if (typeid(tree.getRoot()->key) == typeid(int*))
-        list.sortListByID();
     Node<T>* cursor = tree.getRoot();
     while (cursor->isLeaf == false) {
         cursor = cursor->ptr[0];
@@ -600,7 +738,11 @@ void PointToLinkedList(BPLusTree<T>& tree, StudentList& list) {
         nodePtr = nodePtr->Next;
         i++;
         if (i == cursor->size) {
+            if (cursor->ptr[cursor->size] == NULL) {
+                cout << "The tree is not big enough\n";
+            }
             cursor = cursor->ptr[cursor->size];
+
             i = 0;
         }
     }

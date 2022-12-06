@@ -11,13 +11,14 @@ public:
     char gender;
     Student* Next;
     Student* Prev;
+    string reference;
     Student();
-    Student(int, string, string, string, string, string, char);
+    Student(int, string, string, string, string, string, char, string);
 };
 Student::Student() {
 
 }
-Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen) {
+Student::Student(int id, string name, string dob, string reg, string add, string qual, char gen, string ref) {
     ID = id;
     Name = name;
     DoB = dob;
@@ -26,6 +27,7 @@ Student::Student(int id, string name, string dob, string reg, string add, string
     qualification = qual;
     Next = NULL;
     gender = gen;
+    reference = ref;
 }
 
 //linked list class
@@ -35,14 +37,18 @@ private:
     int maxID;
     Student* Head;
 public:
+    Student* tail;
     StudentList();
     Student* getHead();
     void setHead(Student*);
+    string getLastReference();
     int getMaxID();
-    void addStudent(int, string, string, string, string, string, char);
+    void addStudent(int, string, string, string, string, string, char, string);
     void displayList();
     void sortListByName(); //sort list with respect to their name
     void sortListByID(); //sort list with respect to their ID
+    void sortListByDoB(); //sort list with respect to their DoB
+    void sortListByRegDate(); //sort list with respect to their regDate
     void copyList(StudentList&); //copy list to another list
     void deleteStudent(int);
     ~StudentList();
@@ -62,23 +68,38 @@ void StudentList::setHead(Student* node) {
 int StudentList::getMaxID() {
     return maxID;
 }
+string StudentList::getLastReference() {
+    for (int i = 0;i < tail->reference.length();i++)
+    {
+        if (tail->reference[i] == 'R')
+        {
+            string temp = tail->reference.substr(i + 1, tail->reference.length());
+            int num = stoi(temp);
+            num++;
+            temp = to_string(num);
+            temp = tail->reference.substr(0, i + 1) + temp;
+            return temp;
+        }
+    }
+    return "";
+}
 
-void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen) {
-    Student* newStudent = new Student(id, name, dob, reg, add, qual, gen);
+void StudentList::addStudent(int id, string name, string dob, string reg, string add, string qual, char gen, string ref) {
+    Student* newStudent = new Student(id, name, dob, reg, add, qual, gen, ref);
     if (Head == NULL) {
         Head = newStudent;
+        tail = newStudent;
+        Head->Next = NULL;
+        Head->Prev = NULL;
     }
     else {
-        Student* nodePtr = Head;
-        while (nodePtr->Next != NULL) {
-            nodePtr = nodePtr->Next;
-        }
-        nodePtr->Next = newStudent;
-        newStudent->Prev = nodePtr;
+        tail->Next = newStudent;
+        newStudent->Prev = tail;
+        tail = newStudent;
+        tail->Next = NULL;
     }
-    if (id > maxID) {
+    if (id > maxID)
         maxID = id;
-    }
 }
 
 void StudentList::displayList() {
@@ -102,9 +123,12 @@ void StudentList::sortListByName() {
                 swap(temp->address, temp2->address);
                 swap(temp->gender, temp2->gender);
                 swap(temp->qualification, temp2->qualification);
+                swap(temp->reference, temp2->reference);
             }
             temp2 = temp2->Next;
         }
+        if (temp->Next == NULL)
+            tail = temp;
         temp = temp->Next;
     }
 }
@@ -122,16 +146,65 @@ void StudentList::sortListByID() {
                 swap(temp->address, temp2->address);
                 swap(temp->gender, temp2->gender);
                 swap(temp->qualification, temp2->qualification);
+                swap(temp->reference, temp2->reference);
             }
             temp2 = temp2->Next;
         }
+        if (temp->Next == NULL)
+            tail = temp;
+        temp = temp->Next;
+    }
+}
+void StudentList::sortListByDoB() {
+    // sortList on the basis of name
+    Student* temp = Head;
+    while (temp != NULL) {
+        Student* temp2 = temp->Next;
+        while (temp2 != NULL) {
+            if (temp->DoB.compare(temp2->DoB) > 0) {
+                swap(temp->ID, temp2->ID);
+                swap(temp->Name, temp2->Name);
+                swap(temp->DoB, temp2->DoB);
+                swap(temp->regDate, temp2->regDate);
+                swap(temp->address, temp2->address);
+                swap(temp->gender, temp2->gender);
+                swap(temp->qualification, temp2->qualification);
+                swap(temp->reference, temp2->reference);
+            }
+            temp2 = temp2->Next;
+        }
+        if (temp->Next == NULL)
+            tail = temp;
+        temp = temp->Next;
+    }
+}
+void StudentList::sortListByRegDate() {
+    // sortList on the basis of name
+    Student* temp = Head;
+    while (temp != NULL) {
+        Student* temp2 = temp->Next;
+        while (temp2 != NULL) {
+            if (temp->regDate.compare(temp2->regDate) > 0) {
+                swap(temp->ID, temp2->ID);
+                swap(temp->Name, temp2->Name);
+                swap(temp->DoB, temp2->DoB);
+                swap(temp->regDate, temp2->regDate);
+                swap(temp->address, temp2->address);
+                swap(temp->gender, temp2->gender);
+                swap(temp->qualification, temp2->qualification);
+                swap(temp->reference, temp2->reference);
+            }
+            temp2 = temp2->Next;
+        }
+        if (temp->Next == NULL)
+            tail = temp;
         temp = temp->Next;
     }
 }
 void StudentList::copyList(StudentList& list) {
     Student* temp = Head;
     while (temp != NULL) {
-        list.addStudent(temp->ID, temp->Name, temp->DoB, temp->regDate, temp->address, temp->qualification, temp->gender);
+        list.addStudent(temp->ID, temp->Name, temp->DoB, temp->regDate, temp->address, temp->qualification, temp->gender, temp->reference);
         temp = temp->Next;
     }
 }
@@ -203,6 +276,7 @@ void readData(StudentList& list) {
     int fileNo = 1;
     while (fileNo <= 12) {                      //until 13, but file no. 6 has some problem in format, throwing error
         string fileName = "Fall2022DSDataFile00";
+        string reference;
         if (fileNo > 9) { fileName = "Fall2022DSDataFile0"; }
         fileName += to_string(fileNo);
         iFile.open("./DatasetFall2022DSproject/" + fileName + ".txt");
@@ -214,7 +288,8 @@ void readData(StudentList& list) {
                 char gender;
                 getline(iFile, stdData);
                 splitData(stdData, id, stdName, dob, gender, regDate, address, qualification);
-                list.addStudent(id, stdName, dob, regDate, address, qualification, gender);
+                reference = 'F' + to_string(fileNo) + 'L' + to_string(id + 1);
+                list.addStudent(id, stdName, dob, regDate, address, qualification, gender, reference);
             }
 
         }
